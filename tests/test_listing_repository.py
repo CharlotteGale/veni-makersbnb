@@ -1,4 +1,5 @@
 from lib.listing_repository import ListingRepository
+from lib.listing import Listing
 
 """
 When we call ListingRepository#all
