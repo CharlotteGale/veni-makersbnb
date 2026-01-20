@@ -9,3 +9,6 @@ class Listing:
 
     def __repr__(self):
         return f"Listing({self.id}, {self.user_id}, {self.name}, {self.description}, {self.price_per_night})"
+    
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
