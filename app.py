@@ -31,21 +31,21 @@ class FakeListing:
 @app.route("/")
 def index():
     listings = [
-        FakeListing(
-            "Cosy Studio Flat",
-            "A quiet studio close to the city centre.",
-            75
-        ),
-        FakeListing(
-            "Modern Loft",
-            "Open-plan loft with lots of natural light.",
-            120
-        ),
-        FakeListing(
-            "Country Cottage",
-            "Peaceful countryside retreat with beautiful views.",
-            60
-        ),
+        # FakeListing(
+        #     "Cosy Studio Flat",
+        #     "A quiet studio close to the city centre.",
+        #     75
+        # ),
+        # FakeListing(
+        #     "Modern Loft",
+        #     "Open-plan loft with lots of natural light.",
+        #     120
+        # ),
+        # FakeListing(
+        #     "Country Cottage",
+        #     "Peaceful countryside retreat with beautiful views.",
+        #     60
+        # ),
     ]
 
     return render_template("index.html", listings=listings)
