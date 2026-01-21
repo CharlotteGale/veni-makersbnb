@@ -25,3 +25,21 @@ class ListingRepository:
         row = rows[0]
         listing.id = row['id']
         return listing
+    
+    def find(self, listing_id):
+        rows = self._connection.execute(
+            'SELECT * from listings WHERE id = %s',
+            [listing_id])
+        row = rows[0]
+        return Listing(row['id'], row['user_id'], row['name'], row['description'],row['price_per_night'])
+
+    def search_by_name(self, keyword):
+        rows = self._connection.execute(
+            'SELECT * from listings WHERE name ILIKE %s',
+            [f'%{keyword}%'])
+        return [
+            Listing(row['id'], row['user_id'], row['name'], row['description'], row['price_per_night'])
+            for row in rows
+        ]
+
+
