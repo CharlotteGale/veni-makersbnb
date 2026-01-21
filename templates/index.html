@@ -6,11 +6,16 @@
 
 <!-- SEARCH BAR -->
 <div class="container my-5">
-  <form class="row g-2 align-items-center bg-light p-3 rounded-pill">
+  <form
+    method="GET"
+    action="/"
+    class="row g-2 align-items-center bg-light p-3 rounded-pill"
+  >
 
     <div class="col-md">
       <input
         type="text"
+        name="location"
         class="form-control border-0"
         placeholder="Where"
       >
@@ -19,6 +24,7 @@
     <div class="col-md">
       <input
         type="text"
+        name="date"
         class="form-control border-0"
         placeholder="When"
       >
@@ -27,6 +33,7 @@
     <div class="col-md">
       <input
         type="text"
+        name="guests"
         class="form-control border-0"
         placeholder="Who"
       >
@@ -45,33 +52,60 @@
   </form>
 </div>
 
-<!-- AVAILABLE HOMES HEADER -->
+<!-- AVAILABLE HOMES HEADER + PAGINATION -->
 <div class="container d-flex align-items-center justify-content-between mb-4">
   <h2 class="mb-0">Available Homes</h2>
 
   <div class="d-flex gap-2">
-    <button class="btn btn-outline-secondary btn-sm">←</button>
-    <button class="btn btn-outline-secondary btn-sm">→</button>
+    {% if has_prev %}
+      <a
+        href="/?page={{ page - 1 }}"
+        class="btn btn-outline-secondary btn-sm"
+      >
+        ←
+      </a>
+    {% else %}
+      <button class="btn btn-outline-secondary btn-sm" disabled>
+        ←
+      </button>
+    {% endif %}
+
+    {% if has_next %}
+      <a
+        href="/?page={{ page + 1 }}"
+        class="btn btn-outline-secondary btn-sm"
+      >
+        →
+      </a>
+    {% else %}
+      <button class="btn btn-outline-secondary btn-sm" disabled>
+        →
+      </button>
+    {% endif %}
   </div>
 </div>
 
 <!-- PROPERTY CARDS -->
 <div class="container">
-  <div class="row g-4">
+  <div class="row g-4 justify-content-center">
 
     {% for listing in listings %}
       <div class="col-md-4">
         <div class="card h-100">
 
-          <div class="card-img-top bg-secondary-subtle"
-               style="height: 200px;">
-          </div>
+          <img
+            src="{{ url_for(
+              'static',
+              filename='images/listings/' ~ (listing.image_filename or 'placeholder.jpg')
+            ) }}"
+            class="card-img-top"
+            alt="Photo of {{ listing.name }}"
+            style="height: 200px; object-fit: cover;"
+          >
 
           <div class="card-body">
             <h5 class="card-title">{{ listing.name }}</h5>
-            <p class="card-text">
-              {{ listing.description }}
-            </p>
+            <p class="card-text">{{ listing.description }}</p>
           </div>
 
           <div class="card-footer bg-white border-0">
