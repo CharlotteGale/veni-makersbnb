@@ -1,33 +1,26 @@
 import os
-from flask import Flask, request, render_template
+import bcrypt
+from flask import Flask, request, render_template, redirect, session, flash
+
 from lib.database_connection import DatabaseConnection
 from lib.listing_repository import ListingRepository
+from lib.user_repository import UserRepository
+from lib.user import User
 
+# Create Flask app
 app = Flask(__name__)
+app.secret_key = "dev-secret-key"
 
-
+# Database setup
 connection = DatabaseConnection(test_mode=False)
 connection.connect()
 connection.seed("seeds/makersbnb_veni.sql")
 
-repository = ListingRepository(connection)
+listing_repository = ListingRepository(connection)
+user_repository = UserRepository(connection)
 
 
-# == Your Routes Here ==
-
-# # GET /index
-# # Returns the homepage
-# # Try it:
-# #   ; open http://localhost:5001/index
-# @app.route('/index', methods=['GET'])
-# def get_index():
-#     return render_template('index.html')
-
-# These lines start the server if you run this file directly
-# They also start the server configured to use the test database
-# if started in test mode.
-if __name__ == '__main__':
-    app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
+# Routes
 
 
 @app.route("/")
@@ -35,12 +28,11 @@ def index():
     page = int(request.args.get("page", 1))
     per_page = 3
 
-    # Get all listings from the database
-    all_listings = repository.all()
+    all_listings = listing_repository.all()
 
-    # Pagination logic
     start = (page - 1) * per_page
     end = start + per_page
+
     listings = all_listings[start:end]
 
     has_prev = page > 1
@@ -55,8 +47,52 @@ def index():
     )
 
 
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        user = User(
+            None,
+            request.form["email"],
+            request.form["password"],
+            request.form["name"]
+        )
+
+        user_repository.create(user)
+
+        session["user_id"] = user.id
+        session["user_name"] = user.name
+
+        return redirect("/")
+
+    return render_template("auth/signup.html")
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        user = user_repository.find_by_email(request.form["email"])
+
+        if user and bcrypt.checkpw(
+            request.form["password"].encode("utf-8"),
+            user.password.encode("utf-8")
+        ):
+            session["user_id"] = user.id
+            session["user_name"] = user.name
+            return redirect("/")
+
+        flash("Invalid email or password")
+
+    return render_template("auth/login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
+
+
+# Run server
+# Keep this at the bottom
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, port=port)
+    app.run(debug=True, port=int(os.environ.get("PORT", 5001)))
