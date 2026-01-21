@@ -5,6 +5,7 @@ from lib.database_connection import DatabaseConnection
 from lib.listing_repository import ListingRepository
 from lib.user_repository import UserRepository
 from lib.user import User
+from pathlib import Path
 
 # ======================
 # Create Flask app
@@ -17,7 +18,10 @@ app.secret_key = "dev-secret-key"
 # ======================
 connection = DatabaseConnection(test_mode=False)
 connection.connect()
-connection.seed("seeds/makersbnb_veni.sql")
+connection.seed(
+    Path(__file__).resolve().parent / "seeds" / "makersbnb_veni.sql"
+)
+
 
 listing_repository = ListingRepository(connection)
 user_repository = UserRepository(connection)
