@@ -31,7 +31,7 @@ def test_password_is_stored_in_database(db_connection):
         [new_user.id]
     )
 
-    assert result[0]['password'] == 'TestPassword!'
+    assert result[0]['password'] != 'TestPassword!'
 
 """
 When I call UserRepository#create
