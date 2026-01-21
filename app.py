@@ -1,5 +1,4 @@
 import os
-import bcrypt
 from flask import Flask, request, render_template, redirect, session, flash
 
 from lib.database_connection import DatabaseConnection
@@ -7,11 +6,15 @@ from lib.listing_repository import ListingRepository
 from lib.user_repository import UserRepository
 from lib.user import User
 
+# ======================
 # Create Flask app
+# ======================
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
 
+# ======================
 # Database setup
+# ======================
 connection = DatabaseConnection(test_mode=False)
 connection.connect()
 connection.seed("seeds/makersbnb_veni.sql")
@@ -19,9 +22,9 @@ connection.seed("seeds/makersbnb_veni.sql")
 listing_repository = ListingRepository(connection)
 user_repository = UserRepository(connection)
 
-
+# ======================
 # Routes
-
+# ======================
 
 @app.route("/")
 def index():
@@ -59,6 +62,7 @@ def signup():
 
         user_repository.create(user)
 
+        # Log user in after signup
         session["user_id"] = user.id
         session["user_name"] = user.name
 
@@ -70,12 +74,12 @@ def signup():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        user = user_repository.find_by_email(request.form["email"])
+        user = user_repository.authenticate(
+            request.form["email"],
+            request.form["password"]
+        )
 
-        if user and bcrypt.checkpw(
-            request.form["password"].encode("utf-8"),
-            user.password.encode("utf-8")
-        ):
+        if user:
             session["user_id"] = user.id
             session["user_name"] = user.name
             return redirect("/")
@@ -90,9 +94,19 @@ def logout():
     session.clear()
     return redirect("/")
 
+# Placeholders for drop down menu
+@app.route("/profile")
+def profile():
+    return "Profile page coming soon"
+
+@app.route("/contact")
+def contact():
+    return "Contact page coming soon"
 
 
-# Run server
-# Keep this at the bottom
+
+# ======================
+# Run server (LAST)
+# ======================
 if __name__ == "__main__":
     app.run(debug=True, port=int(os.environ.get("PORT", 5001)))
