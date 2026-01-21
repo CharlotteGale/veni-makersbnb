@@ -21,7 +21,7 @@ class UserRepository:
         user.id = row['id']
         return user
     
-def authenticate(self, email, password):
+    def authenticate(self, email, password):
         result = self._connection.execute(
             'SELECT * FROM users WHERE email = %s;',
             [email]

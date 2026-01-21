@@ -68,3 +68,28 @@ def test_user_authentication(db_connection):
     assert authenticated_user is not None
     assert authenticated_user.email == 'test@email.com'
 
+"""
+When I call UserRepository#authenticate
+I want to ensure if the wrong password is inputted, the authentication fails
+"""
+def test_authenticate_rejects_wrong_password(db_connection):
+    db_connection.seed("seeds/makersbnb_veni.sql")
+    repo = UserRepository(db_connection)
+
+    repo.create(User(None, 'test@email.com', 'TestPassword!', 'Test User'))
+
+    authenticated_user = repo.authenticate('test@email.com', 'WrongPassword')
+
+    assert authenticated_user is None
+
+"""
+When I call UserRepository#authenticate
+I want to ensure the authentication fails if passed an unknown user
+"""
+def test_authenticate_rejects_wrong_password(db_connection):
+    db_connection.seed("seeds/makersbnb_veni.sql")
+    repo = UserRepository(db_connection)
+
+    authenticated_user = repo.authenticate('unknown@email.com', 'anyPassword')
+
+    assert authenticated_user is None
