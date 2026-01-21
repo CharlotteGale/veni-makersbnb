@@ -1,5 +1,5 @@
 from lib.user_repository import UserRepository
-
+from lib.user import User
 
 """
 When I call UserRepository#create
@@ -11,7 +11,4 @@ def test_create_new_record(db_connection):
 
     new_user = repo.create(User(None, 'test@email.com', 'TestPassword!', 'Test User'))
 
-    assert new_user.id == 1
-    assert new_user.email == 'test@email.com'
-    assert new_user.password == 'TestPassword!'
-    assert new_user.name == 'Test User'
+    assert new_user == User(1, 'test@email.com', 'TestPassword!', 'Test User')
