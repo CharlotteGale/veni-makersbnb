@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS listings CASCADE;
 DROP TABLE IF EXISTS bookings CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
 DROP TYPE IF EXISTS booking_status;
 
 CREATE TABLE listings (
@@ -26,4 +28,12 @@ CREATE TABLE bookings (
     guest_id INTEGER,
     date DATE,
     status booking_status DEFAULT 'pending'
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255),
+    password VARCHAR(255),
+    name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
