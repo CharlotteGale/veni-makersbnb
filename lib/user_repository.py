@@ -21,3 +21,19 @@ class UserRepository:
         user.id = row['id']
         return user
     
+def authenticate(self, email, password):
+        result = self._connection.execute(
+            'SELECT * FROM users WHERE email = %s;',
+            [email]
+        )
+
+        if not result:
+            return None
+        
+        row = result[0]
+        stored_password = row['password'].encode('utf-8')
+
+        if bcrypt.checkpw(password.encode('utf-8'), stored_password):
+            return User(row['id'], row['email'], None, row['name'])
+        
+        return None
