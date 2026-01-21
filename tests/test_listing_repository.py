@@ -16,3 +16,17 @@ def test_get_all_records(db_connection):
         Listing(4, 2, 'Luxury City Penthouse', 'Modern penthouse with skyline views, floor-to-ceiling windows, balcony seating, and premium finishes.', 320),
         Listing(5, 4, 'Budget-Friendly Private Room', 'Simple private room in a shared flat with great transport links — clean, safe, and ideal for solo travellers.', 55)
     ]
+
+
+
+"""
+When we call ListingRepository#create
+We create a new Listing object reflecting the seed data
+"""
+def test_create_new_record(db_connection):
+    db_connection.seed("seeds/makersbnb_veni.sql")
+    repo = ListingRepository(db_connection)
+
+    new_listing = repo.create(Listing(None, 1, 'Test Name', 'Test Description', 15))
+
+    assert new_listing == Listing(6, 1, 'Test Name', 'Test Description', 15)
