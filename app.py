@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from flask import Flask, request, render_template
 from lib.database_connection import DatabaseConnection
 from lib.listing_repository import ListingRepository
@@ -8,7 +9,10 @@ app = Flask(__name__)
 
 connection = DatabaseConnection(test_mode=False)
 connection.connect()
-connection.seed("seeds/makersbnb_veni.sql")
+connection.seed(
+    Path(__file__).resolve().parent / "seeds" / "makersbnb_veni.sql"
+)
+
 
 repository = ListingRepository(connection)
 
@@ -57,6 +61,5 @@ def index():
 
 
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, port=port)
+if __name__ == '__main__':
+    app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
