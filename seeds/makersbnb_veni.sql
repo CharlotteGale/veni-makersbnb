@@ -1,15 +1,24 @@
-DROP TABLE IF EXISTS listings CASCADE;
 DROP TABLE IF EXISTS bookings CASCADE;
+DROP TABLE IF EXISTS listings CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 DROP TYPE IF EXISTS booking_status;
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255),
+    password VARCHAR(255),
+    name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE listings (
     id SERIAL PRIMARY KEY,
     user_id INTEGER,
     name VARCHAR(255),
     description TEXT,
-    price_per_night INTEGER
+    price_per_night INTEGER,
+    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 INSERT INTO listings (user_id, name, description, price_per_night) VALUES 
@@ -28,13 +37,8 @@ CREATE TABLE bookings (
     listing_id INTEGER,
     guest_id INTEGER,
     date DATE,
-    status booking_status DEFAULT 'pending'
+    status booking_status DEFAULT 'pending',
+    CONSTRAINT fk_listing_id FOREIGN KEY(listing_id) REFERENCES listings(id) ON DELETE CASCADE,
+    CONSTRAINT fk_guest_id FOREIGN KEY(guest_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(255),
-    password VARCHAR(255),
-    name VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
