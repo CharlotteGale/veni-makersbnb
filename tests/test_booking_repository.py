@@ -9,6 +9,6 @@ def test_create_new_record(db_connection):
     db_connection.seed("seeds/makersbnb_veni.sql")
     repo = BookingRepository(db_connection)
 
-    new_booking = repo.create(Booking(None, 1, 3, '2026-01-20'))
+    new_booking = repo.create(Booking(None, 2, 3, '2026-01-20'))
 
     assert new_booking == Booking(1, 1, 3, '2026-01-20', 'pending')
