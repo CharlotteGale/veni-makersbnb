@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, render_template
 from lib.database_connection import DatabaseConnection
 from lib.listing_repository import ListingRepository
