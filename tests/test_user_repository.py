@@ -52,3 +52,19 @@ def test_password_is_hashed_not_plain_text(db_connection):
 
     assert stored_password != 'TestPassword!'
     assert stored_password.startswith('$2b$')
+
+"""
+When I call UserRepository#authenticate
+I want to ensure that my credentials are checked and I can login successfully
+"""
+def test_user_authentication(db_connection):
+    db_connection.seed("seeds/makersbnb_veni.sql")
+    repo = UserRepository(db_connection)
+
+    repo.create(User(None, 'test@email.com', 'TestPassword!', 'Test User'))
+
+    authenticated_user = repo.authenticate('test@email.com', 'TestPassword!')
+
+    assert authenticated_user is not None
+    assert authenticated_user.email == 'test@email.com'
+
