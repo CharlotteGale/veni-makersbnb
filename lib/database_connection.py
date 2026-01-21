@@ -20,6 +20,12 @@ class DatabaseConnection:
     # This method connects to PostgreSQL using the psycopg library. We connect
     # to localhost and select the database name given in argument.
     def connect(self):
+        if os.environ.get("APP_ENV") == "PRODUCTION":
+            user = os.environ.get("POSTGRES_USER")
+            password = os.environ.get("POSTGRES_PASSWORD")
+            host = os.environ.get("POSTGRES_HOST")
+            db = os.environ.get("POSTGRES_DB", "postgres")
+            return f"postgresql://{user}:{password}@{host}:5432/{db}"
         try:
             self.connection = psycopg.connect(
                 f"postgresql://localhost/{self._database_name()}",

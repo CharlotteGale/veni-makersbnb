@@ -1,4 +1,7 @@
 DROP TABLE IF EXISTS listings CASCADE;
+DROP SEQUENCE IF EXISTS listings_id_seq;
+
+CREATE SEQUENCE IF NOT EXISTS listings_id_seq;
 
 CREATE TABLE listings (
     id SERIAL PRIMARY KEY,
