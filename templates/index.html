@@ -52,64 +52,69 @@
   </form>
 </div>
 
-<!-- AVAILABLE HOMES HEADER -->
+<!-- AVAILABLE HOMES HEADER + PAGINATION -->
 <div class="container d-flex align-items-center justify-content-between mb-4">
   <h2 class="mb-0">Available Homes</h2>
 
   <div class="d-flex gap-2">
-    <button
-      class="btn btn-outline-secondary btn-sm"
-      {% if has_prev is defined and not has_prev %}disabled{% endif %}
-    >
-      ←
-    </button>
+    {% if has_prev %}
+      <a
+        href="/?page={{ page - 1 }}"
+        class="btn btn-outline-secondary btn-sm"
+      >
+        ←
+      </a>
+    {% else %}
+      <button class="btn btn-outline-secondary btn-sm" disabled>
+        ←
+      </button>
+    {% endif %}
 
-    <button
-      class="btn btn-outline-secondary btn-sm"
-      {% if has_next is defined and not has_next %}disabled{% endif %}
-    >
-      →
-    </button>
+    {% if has_next %}
+      <a
+        href="/?page={{ page + 1 }}"
+        class="btn btn-outline-secondary btn-sm"
+      >
+        →
+      </a>
+    {% else %}
+      <button class="btn btn-outline-secondary btn-sm" disabled>
+        →
+      </button>
+    {% endif %}
   </div>
 </div>
 
 <!-- PROPERTY CARDS -->
 <div class="container">
-  <div class="row g-4">
+  <div class="row g-4 justify-content-center">
 
-    {% if listings is defined and listings %}
-      {% for listing in listings %}
-        <div class="col-md-4">
-          <div class="card h-100">
+    {% for listing in listings %}
+      <div class="col-md-4">
+        <div class="card h-100">
 
-            <div
-              class="card-img-top bg-secondary-subtle"
-              style="height: 200px;"
-            ></div>
+          <img
+            src="{{ url_for(
+              'static',
+              filename='images/listings/' ~ (listing.image_filename or 'placeholder.jpg')
+            ) }}"
+            class="card-img-top"
+            alt="Photo of {{ listing.name }}"
+            style="height: 200px; object-fit: cover;"
+          >
 
-            <div class="card-body">
-              <h5 class="card-title">
-                {{ listing.name or "Unnamed space" }}
-              </h5>
-              <p class="card-text">
-                {{ listing.description or "No description provided." }}
-              </p>
-            </div>
-
-            <div class="card-footer bg-white border-0">
-              <strong>
-                £{{ listing.price_per_night if listing.price_per_night is not none else "—" }}
-              </strong> / night
-            </div>
-
+          <div class="card-body">
+            <h5 class="card-title">{{ listing.name }}</h5>
+            <p class="card-text">{{ listing.description }}</p>
           </div>
+
+          <div class="card-footer bg-white border-0">
+            <strong>£{{ listing.price_per_night }}</strong> / night
+          </div>
+
         </div>
-      {% endfor %}
-    {% else %}
-      <div class="col-12 text-center text-muted py-5">
-        No homes available right now.
       </div>
-    {% endif %}
+    {% endfor %}
 
   </div>
 </div>

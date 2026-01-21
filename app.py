@@ -30,25 +30,52 @@ class FakeListing:
 
 @app.route("/")
 def index():
-    listings = [
-        # FakeListing(
-        #     "Cosy Studio Flat",
-        #     "A quiet studio close to the city centre.",
-        #     75
-        # ),
-        # FakeListing(
-        #     "Modern Loft",
-        #     "Open-plan loft with lots of natural light.",
-        #     120
-        # ),
-        # FakeListing(
-        #     "Country Cottage",
-        #     "Peaceful countryside retreat with beautiful views.",
-        #     60
-        # ),
+    fake_listings = [
+        {
+            "name": "Cozy Flat",
+            "description": "Close to city centre",
+            "price_per_night": 95,
+            "image_filename": "flat1.jpg"
+        },
+        {
+            "name": "Beach House",
+            "description": "Sea views",
+            "price_per_night": 150,
+            "image_filename": None
+        },
+                {
+            "name": "Cozy Flat",
+            "description": "Close to city centre",
+            "price_per_night": 95,
+            "image_filename": "flat1.jpg"
+        },
+        {
+            "name": "Beach House",
+            "description": "Sea views",
+            "price_per_night": 150,
+            "image_filename": None
+        },
     ]
 
-    return render_template("index.html", listings=listings)
+    page = int(request.args.get("page", 1))
+    per_page = 3
+
+    start = (page - 1) * per_page
+    end = start + per_page
+
+    listings = fake_listings[start:end]
+
+    has_prev = page > 1
+    has_next = end < len(fake_listings)
+
+    return render_template(
+        "index.html",
+        listings=listings,
+        page=page,
+        has_prev=has_prev,
+        has_next=has_next
+    )
+
 
 
 if __name__ == "__main__":
