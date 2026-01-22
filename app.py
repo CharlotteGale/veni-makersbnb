@@ -162,6 +162,27 @@ def create_booking(listing_id):
     flash("Booking request submitted!")
     return redirect("/profile")
 
+@app.route("/search", methods=["GET"])
+def search():
+    query = request.args.get("q", "").lower()  # get search string, default empty
+
+    all_listings = listing_repository.all()
+
+    # Filter listings that contain the search in the name or description
+    if query:
+        filtered_listings = [
+            listing for listing in all_listings
+            if query in listing.name.lower() or query in listing.description.lower()
+        ]
+    else:
+        filtered_listings = all_listings
+
+    return render_template(
+        "search_results.html",
+        listings=filtered_listings,
+        query=query
+    )
+
 
 
 

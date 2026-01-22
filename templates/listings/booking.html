@@ -26,9 +26,9 @@ Book {{ listing.name }} · makersbnb
 
     <!-- Booking form -->
     <div class="card p-4">
-        <h3 class="mb-3">Book this stay</h3>
+        <h3 class="mb-3">Book this listing</h3>
 
-        <<form method="POST" action="/listings/{{ listing.id }}/book">
+        <form method="POST" action="/listings/{{ listing.id }}/book">
 
             <div class="mb-3">
                 <label class="form-label">Select date</label>
