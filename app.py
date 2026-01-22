@@ -6,6 +6,9 @@ from lib.listing_repository import ListingRepository
 from lib.user_repository import UserRepository
 from lib.user import User
 from pathlib import Path
+from lib.booking import Booking
+from lib.booking_repository import BookingRepository
+
 
 # ======================
 # Create Flask app
@@ -18,13 +21,15 @@ app.secret_key = "dev-secret-key"
 # ======================
 connection = DatabaseConnection(test_mode=False)
 connection.connect()
-connection.seed(
-    Path(__file__).resolve().parent / "seeds" / "makersbnb_veni.sql"
-)
+# connection.seed(
+#     Path(__file__).resolve().parent / "seeds" / "makersbnb_veni.sql"
+# )
 
 
 listing_repository = ListingRepository(connection)
 user_repository = UserRepository(connection)
+booking_repository = BookingRepository(connection)
+
 
 # ======================
 # Routes
@@ -127,11 +132,41 @@ def host_listings():
     )
 
 
+@app.route("/listings/<int:listing_id>")
+def listing_booking(listing_id):
+    listing = listing_repository.find(listing_id)
+
+    if not listing:
+        return "Listing not found", 404
+
+    return render_template(
+        "listings/booking.html",
+        listing=listing
+    )
+
+@app.route("/listings/<int:listing_id>/book", methods=["POST"])
+def create_booking(listing_id):
+    if not session.get("user_id"):
+        return redirect("/login")
+
+    booking = Booking(
+        None,
+        listing_id,
+        session["user_id"],
+        request.form["date"],
+        "pending"
+    )
+
+    booking_repository.create(booking)
+
+    flash("Booking request submitted!")
+    return redirect("/profile")
+
 
 
 
 # ======================
-# Run server (LAST)
+# Run server last
 # ======================
 if __name__ == "__main__":
     app.run(debug=True, port=int(os.environ.get("PORT", 5001)))
