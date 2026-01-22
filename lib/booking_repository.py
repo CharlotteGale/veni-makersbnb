@@ -20,3 +20,18 @@ class BookingRepository:
             Booking(row['id'], row['listing_id'], row['guest_id'], str(row['date']), row['status'])
             for row in rows
         ]
+        row = rows[0]
+        booking.id = row['id']
+        return booking
+    
+    def confirm_booking(self, booking_id):
+        self._connection.execute(
+            'UPDATE bookings SET status = %s WHERE id = %s;',
+            ['confirmed', booking_id]
+        )
+
+    def reject_booking(self, booking_id):
+        self._connection.execute(
+            'UPDATE bookings SET status = %s WHERE id = %s;',
+            ['rejected', booking_id]
+        )
