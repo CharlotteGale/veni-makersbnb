@@ -6,6 +6,8 @@ from lib.listing_repository import ListingRepository
 from lib.user_repository import UserRepository
 from lib.user import User
 from pathlib import Path
+from lib.listing import Listing
+
 
 # ======================
 # Create Flask app
@@ -125,6 +127,34 @@ def host_listings():
         "host/listings.html", 
         host_listings=listings # /KS 22Jan2026/ host_listings is the listings variablenow plugged into to HTML template for host/listings
     )
+
+from flask import request, redirect, render_template, session, flash
+
+@app.route("/host/add_listing", methods=["GET", "POST"])
+def add_listing():
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        flash("Please log in to add a listing.")
+        return redirect("/login")
+
+    if request.method == "POST":
+        listing = Listing(
+            id=None,
+            name=request.form["name"],
+            description=request.form["description"],
+            price_per_night=request.form["price_per_night"],
+            user_id=user_id,
+        )
+
+        listing_repository.create(listing)
+
+        flash("Listing added successfully!")
+        return redirect("/host/listings")
+
+    return render_template("host/add_listing.html")
+
+
 
 
 
