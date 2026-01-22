@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile · makersbnb{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+
+  <h2 class="mb-4">My Profile</h2>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <p><strong>Name:</strong> {{ user.name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+  </div>
+
+  <div class="d-grid gap-3">
+    <a href="/guest/bookings" class="btn btn-dark">
+      My bookings
+    </a>
+
+    <a href="/host/listings" class="btn btn-outline-dark">
+      My listings
+    </a>
+  </div>
+
+</div>
+{% endblock %}
