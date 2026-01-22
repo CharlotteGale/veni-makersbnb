@@ -6,50 +6,19 @@
 
 <!-- SEARCH BAR -->
 <div class="container my-5">
-  <form
-    method="GET"
-    action="/"
-    class="row g-2 align-items-center bg-light p-3 rounded-pill"
-  >
-
+  <form method="GET" action="/search" class="row g-2 align-items-center bg-light p-3 rounded-pill">
     <div class="col-md">
-      <input
-        type="text"
-        name="location"
-        class="form-control border-0"
-        placeholder="Where"
-      >
-    </div>
-
-    <div class="col-md">
-      <input
-        type="text"
-        name="date"
-        class="form-control border-0"
-        placeholder="When"
-      >
-    </div>
-
-    <div class="col-md">
-      <input
-        type="text"
-        name="guests"
-        class="form-control border-0"
-        placeholder="Who"
-      >
+      <input type="text" name="q" class="form-control border-0" placeholder="Search for listings">
     </div>
 
     <div class="col-auto">
-      <button
-        type="submit"
-        class="btn btn-secondary rounded-circle"
-        style="width: 48px; height: 48px;"
-      >
+      <button type="submit" class="btn btn-secondary rounded-circle" style="width: 48px; height: 48px;">
         🔍
       </button>
     </div>
-
   </form>
+
+
 </div>
 
 <!-- AVAILABLE HOMES HEADER + ARROWS -->
@@ -58,29 +27,23 @@
 
   <div class="d-flex gap-2">
     {% if has_prev %}
-      <a
-        href="/?page={{ page - 1 }}"
-        class="btn btn-outline-secondary btn-sm"
-      >
-        ←
-      </a>
+    <a href="/?page={{ page - 1 }}" class="btn btn-outline-secondary btn-sm">
+      ←
+    </a>
     {% else %}
-      <button class="btn btn-outline-secondary btn-sm" disabled>
-        ←
-      </button>
+    <button class="btn btn-outline-secondary btn-sm" disabled>
+      ←
+    </button>
     {% endif %}
 
     {% if has_next %}
-      <a
-        href="/?page={{ page + 1 }}"
-        class="btn btn-outline-secondary btn-sm"
-      >
-        →
-      </a>
+    <a href="/?page={{ page + 1 }}" class="btn btn-outline-secondary btn-sm">
+      →
+    </a>
     {% else %}
-      <button class="btn btn-outline-secondary btn-sm" disabled>
-        →
-      </button>
+    <button class="btn btn-outline-secondary btn-sm" disabled>
+      →
+    </button>
     {% endif %}
   </div>
 </div>
@@ -90,37 +53,29 @@
   <div class="row g-4 justify-content-center">
 
     {% for listing in listings %}
-      <div class="col-md-4">
+    <div class="col-md-4">
 
-        <a
-          href="/listings/{{ listing.id }}"
-          class="text-decoration-none text-dark"
-        >
-          <div class="card h-100">
+      <a href="/listings/{{ listing.id }}" class="text-decoration-none text-dark">
+        <div class="card h-100">
 
-            <img
-              src="{{ url_for(
+          <img src="{{ url_for(
                 'static',
                 filename='images/listings/' ~ (listing.image_filename or 'placeholder.jpg')
-              ) }}"
-              class="card-img-top"
-              alt="Photo of {{ listing.name }}"
-              style="height: 200px; object-fit: cover;"
-            >
+              ) }}" class="card-img-top" alt="Photo of {{ listing.name }}" style="height: 200px; object-fit: cover;">
 
-            <div class="card-body">
-              <h5 class="card-title">{{ listing.name }}</h5>
-              <p class="card-text">{{ listing.description }}</p>
-            </div>
-
-            <div class="card-footer bg-white border-0">
-              <strong>£{{ listing.price_per_night }}</strong> / night
-            </div>
-
+          <div class="card-body">
+            <h5 class="card-title">{{ listing.name }}</h5>
+            <p class="card-text">{{ listing.description }}</p>
           </div>
-        </a>
 
-      </div>
+          <div class="card-footer bg-white border-0">
+            <strong>£{{ listing.price_per_night }}</strong> / night
+          </div>
+
+        </div>
+      </a>
+
+    </div>
     {% endfor %}
 
   </div>
