@@ -6,8 +6,8 @@ class BookingRepository:
 
     def create(self, booking):
         rows = self._connection.execute(
-            'INSERT INTO bookings (listing_id, guest_id, date, status) '
-            'VALUES (%s, %s, %s, %s) '
+            'INSERT INTO bookings (listing_id, guest_id, date, status) '\
+            'VALUES (%s, %s, %s, %s) '\
             'RETURNING id;',
             [booking.listing_id, booking.guest_id, booking.date, booking.status]
         )
