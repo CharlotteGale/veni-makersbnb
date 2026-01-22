@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS bookings CASCADE;
 DROP TABLE IF EXISTS listings CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
--- KS22Jan2026 - I know we're dropping tables with CASCADE above but just putting this line below to drop booking_details to be explicitly sure nothing is hanging around on this joint bookings_details view.
+-- KS22Jan2026 - I know we're dropping tables with CASCADE above but just putting this line below to drop booking_details to be explicitly sure nothing is hanging around on this joint bookings_details view when it shouldn't be.
 
 DROP VIEW IF EXISTS booking_details; 
  

@@ -3,7 +3,7 @@ from lib.booking import Booking
 class BookingRepository:
 
 
-    
+
     def __init__(self, connection):
         self._connection = connection
 
@@ -20,11 +20,11 @@ class BookingRepository:
     
     def show_guest_bookings(self, guest_id):
         rows = self._connection.execute(
-        'SELECT * FROM bookings WHERE guest_id = %s ORDER BY id;',
+        'SELECT * FROM booking_detials WHERE guest_id = %s ORDER BY id;',
         [guest_id]
         )
         return [
-        Booking(row['id'], row['listing_id'], row['guest_id'], row['date'], row['status'])
+        Booking(row['id'], row['listing_id'], row['guest_id'], row['date'], row['status'], row['listing_name'], row['listing_description'],row['price_per_night'])
         for row in rows
         ]
 
