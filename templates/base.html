@@ -17,7 +17,17 @@
         body {
             font-family: 'Istok Web', sans-serif;
         }
+
+        .card {
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
     </style>
+
 </head>
 
 <body>
@@ -43,15 +53,10 @@
                 </span>
 
                 <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-decoration-none"
-                       id="profileDropdown"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        <img src="{{ url_for('static', filename='profile.jpg') }}"
-                             alt="Profile"
-                             width="40"
-                             height="40"
-                             class="rounded-circle">
+                    <a href="#" class="d-flex align-items-center text-decoration-none" id="profileDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ url_for('static', filename='profile.jpg') }}" alt="Profile" width="40" height="40"
+                            class="rounded-circle">
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end mt-2 shadow">
@@ -59,6 +64,12 @@
                         <li>
                             <a class="dropdown-item" href="/profile">
                                 My profile
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="/my-bookings">
+                                My bookings
                             </a>
                         </li>
 
