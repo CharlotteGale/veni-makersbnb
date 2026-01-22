@@ -21,9 +21,25 @@ def test_update_booking_status_to_confirmed(db_connection):
     db_connection.seed("seeds/makersbnb_veni.sql")
     repo = BookingRepository(db_connection)
 
-    new_booking = repo.create(Booking(None, 6, 3, '2026-03-01'))
+    repo.create(Booking(None, 6, 3, '2026-03-01'))
 
-    repo.confirm_status(3)
+    repo.confirm_booking(3)
 
     result = db_connection.execute('SELECT status FROM bookings WHERE id = %s;', [3])
     assert result[0]['status'] == 'confirmed'
+
+
+"""
+When I call BookingRepository#update_status
+I update the status to rejected
+"""
+def test_update_booking_status_to_rejected(db_connection):
+    db_connection.seed("seeds/makersbnb_veni.sql")
+    repo = BookingRepository(db_connection)
+
+    repo.create(Booking(None, 6, 3, '2026-03-01'))
+
+    repo.reject_booking(3)
+
+    result = db_connection.execute('SELECT status FROM bookings WHERE id = %s;', [3])
+    assert result[0]['status'] == 'rejected'

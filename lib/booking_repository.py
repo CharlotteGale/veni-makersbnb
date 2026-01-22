@@ -13,7 +13,7 @@ class BookingRepository:
         booking.id = row['id']
         return booking
     
-    def confirm_status(self, booking_id):
+    def confirm_booking(self, booking_id):
         self._connection.execute(
             'UPDATE bookings SET status = %s WHERE id = %s;',
             ['confirmed', booking_id]
