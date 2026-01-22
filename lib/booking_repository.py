@@ -36,3 +36,16 @@ class BookingRepository:
             'UPDATE bookings SET status = %s WHERE id = %s;',
             ['rejected', booking_id]
         )
+
+    def check_dates(self, listing_id, date):
+        rows = self._connection.execute(
+            'SELECT status FROM bookings ' \
+            'WHERE listing_id = %s ' \
+            'AND status = %s ' \
+            'AND date = %s;',
+            [listing_id, 'confirmed', date]
+        )
+
+        return len(rows) == 0
+
+        
