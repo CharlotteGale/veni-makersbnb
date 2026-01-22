@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+<!-- /KS 22Jan2026/ V basic HTML stand in for host listings, I think this is a vaguely sensible starter for 10 but havent been able to see it on front-end as I don't know how to login ha! It for sure wont be as pretty as the rest of your front-end so please feel free to edit (heavily) as you see fit!-->
+
+{% block content %}
+<h1>Your listings</h1>
+
+
+{% if host_listings %}
+    <ul>
+        {% for listing in host_listings %}
+            <li>
+                <strong>{{ listing.name }}</strong><br>
+                {{ listing.description }}<br>
+                £{{ listing.price_per_night }} / night <!-- /KS 22Jan2026/ adding i in £ here to preface the number we have in seed data, hopefully this looks ok on front-end -->
+            </li>
+            <hr>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You don’t have any listings yet.</p>
+{% endif %}
+{% endblock %}

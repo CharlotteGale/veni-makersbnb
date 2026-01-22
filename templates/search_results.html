@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results · makersbnb{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2>Search results{% if query %} for "{{ query }}"{% endif %}</h2>
+</div>
+
+<div class="container">
+  <div class="row g-4 justify-content-center">
+    {% for listing in listings %}
+      <div class="col-md-4">
+        <a href="/listings/{{ listing.id }}/book" class="text-decoration-none text-dark">
+          <div class="card h-100">
+            <img
+              src="{{ url_for('static', filename='images/listings/' ~ (listing.image_filename or 'placeholder.jpg')) }}"
+              class="card-img-top"
+              alt="Photo of {{ listing.name }}"
+              style="height: 200px; object-fit: cover;"
+            >
+            <div class="card-body">
+              <h5 class="card-title">{{ listing.name }}</h5>
+              <p class="card-text">{{ listing.description }}</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <strong>£{{ listing.price_per_night }}</strong> / night
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if not listings %}
+    <p class="mt-4 text-muted">No listings found.</p>
+  {% endif %}
+</div>
+{% endblock %}
