@@ -143,6 +143,16 @@ def guest_bookings():
     if user_id is None:
         flash("Please log in to view your bookings.")
         return redirect("/login")
+    
+    # /KS 22Jan2026/ Pull ONLY this guest's bookings- used filter search function from booking_repository.py
+    bookings = booking_repository.show_guest_bookings(user_id)
+
+    return render_template(
+        "guest/bookings.html", 
+        user_guest_bookings=bookings # /KS 22Jan2026/ user_guest_bookings is the bookings variable now plugged into to HTML template for guest/bookings
+    )
+
+
 @app.route("/listings/<int:listing_id>")
 def listing_booking(listing_id):
     listing = listing_repository.find(listing_id)
@@ -195,13 +205,7 @@ def search():
     )
 
 
-    # /KS 22Jan2026/ Pull ONLY this guest's bookings- used filter search function from booking_repository.py
-    bookings = booking_repository.show_guest_bookings(user_id)
 
-    return render_template(
-        "guest/bookings.html", 
-        user_guest_bookings=bookings # /KS 22Jan2026/ user_guest_bookings is the bookings variable now plugged into to HTML template for guest/bookings
-    )
 
 # ======================
 # Run server last

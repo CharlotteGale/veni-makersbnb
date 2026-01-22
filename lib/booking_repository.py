@@ -1,6 +1,9 @@
 from lib.booking import Booking
 
 class BookingRepository:
+
+
+    
     def __init__(self, connection):
         self._connection = connection
 

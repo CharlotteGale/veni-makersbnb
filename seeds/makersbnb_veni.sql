@@ -2,6 +2,12 @@ DROP TABLE IF EXISTS bookings CASCADE;
 DROP TABLE IF EXISTS listings CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
+-- KS22Jan2026 - I know we're dropping tables with CASCADE above but just putting this line below to drop booking_details to be explicitly sure nothing is hanging around on this joint bookings_details view.
+
+DROP VIEW IF EXISTS booking_details; 
+ 
+
+
 DROP TYPE IF EXISTS booking_status;
 
 CREATE TABLE users (
@@ -32,6 +38,13 @@ CREATE TABLE bookings (
     CONSTRAINT fk_listing_id FOREIGN KEY(listing_id) REFERENCES listings(id) ON DELETE CASCADE,
     CONSTRAINT fk_guest_id FOREIGN KEY(guest_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE VIEW booking_details AS
+SELECT bookings.*, 
+listings.name AS listing_name, listings.description AS listing_description, listings.price_per_night
+FROM bookings
+JOIN listings ON listings.id = bookings.listing_id;
+
 
 INSERT INTO users (email, password, name) VALUES 
     ('owner1@example.com', 'hashed_password_1', 'Property Owner 1'),
