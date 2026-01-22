@@ -12,3 +12,18 @@ def test_create_new_record(db_connection):
     new_booking = repo.create(Booking(None, 2, 3, '2026-01-20'))
 
     assert new_booking == Booking(3, 2, 3, '2026-01-20', 'pending')
+
+"""
+When I call BookingRepository#update_status
+I update the status to confirmed
+"""
+def test_update_booking_status_to_confirmed(db_connection):
+    db_connection.seed("seeds/makersbnb_veni.sql")
+    repo = BookingRepository(db_connection)
+
+    new_booking = repo.create(Booking(None, 6, 3, '2026-03-01'))
+
+    repo.confirm_status(3)
+
+    result = db_connection.execute('SELECT status FROM bookings WHERE id = %s;', [3])
+    assert result[0]['status'] == 'confirmed'
