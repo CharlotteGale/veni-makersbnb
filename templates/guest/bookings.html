@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+<!-- /KS 22Jan2026/ Again, v basic HTML stand in for guest bookinigs, I think this is a vaguely sensible starter for 10 but havent been able to see it on front-end as I don't know how to login ha! It for sure wont be as pretty as the rest of your front-end so please feel free to edit (heavily) as you see fit!-->
+
+{% block content %}
+<h1>Your Bookings</h1>
+
+
+{% if user_guest_bookings %}
+    <ul>
+        {% for booking in user_guest_bookings %}
+            <li>
+                <strong>{{ booking.listing_id }}</strong><br>
+                {{ booking.date }}<br>
+                {{ booking.status }}<br>
+            </li>
+            <hr>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You don’t have any bookings yet.</p>
+{% endif %}
+{% endblock %}

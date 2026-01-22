@@ -42,4 +42,6 @@ INSERT INTO listings (user_id, name, description, price_per_night) VALUES
 
 INSERT INTO bookings (listing_id, guest_id, date, status) VALUES
     (1, 5, '2026-03-01', 'pending'),
-    (3, 8, '2026-02-14', 'confirmed');
+    (3, 8, '2026-02-14', 'confirmed'),
+    (3, 3, '2026-04-14', 'confirmed'),
+    (1, 3, '2026-03-23', 'pending');
