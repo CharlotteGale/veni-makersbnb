@@ -20,7 +20,7 @@ class BookingRepository:
     
     def show_guest_bookings(self, guest_id):
         rows = self._connection.execute(
-        'SELECT * FROM booking_detials WHERE guest_id = %s ORDER BY id;',
+        'SELECT * FROM booking_details WHERE guest_id = %s ORDER BY id;',
         [guest_id]
         )
         return [

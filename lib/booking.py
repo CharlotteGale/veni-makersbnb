@@ -13,4 +13,10 @@ class Booking:
         return f"Booking({self.id}, {self.listing_id}, {self.guest_id}, {self.date!r}, {self.status})"
     
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__gi
+        return (
+        self.id == other.id and
+        self.listing_id == other.listing_id and
+        self.guest_id == other.guest_id and
+        self.date == other.date and
+        self.status == other.status
+        )
