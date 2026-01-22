@@ -108,6 +108,27 @@ def contact():
     return "Contact page coming soon"
 
 
+@app.route("/host/listings")
+def host_listings():
+    user_id = session.get("user_id")
+
+    # /KS 22Jan2026/ If user not logged in, bounce to login. I know we may be asking the user to login before they can even see this option in the NAV bar but adding in for extra safety in case the link to this route is shared and bypasses any "UI walls".
+
+    if user_id is None:
+        flash("Please log in to view your listings.")
+        return redirect("/login")
+
+    # /KS 22Jan2026/ Pull ONLY this host's listings (secure server-side filter) - used filter search function from listing_repository.py
+    listings = listing_repository.show_host_listings(user_id)
+
+    return render_template(
+        "host/listings.html", 
+        host_listings=listings # /KS 22Jan2026/ host_listings is the listings variablenow plugged into to HTML template for host/listings
+    )
+
+
+
+
 
 # ======================
 # Run server (LAST)
