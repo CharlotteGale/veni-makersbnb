@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Sign up · makersbnb{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 400px;">
+  <h2 class="mb-4 text-center">Sign up</h2>
+
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input name="name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input name="email" type="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input name="password" type="password" class="form-control" required>
+    </div>
+
+    <button class="btn btn-primary w-100">Create account</button>
+  </form>
+</div>
+{% endblock %}

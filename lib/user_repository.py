@@ -1,4 +1,5 @@
 import bcrypt
+from lib.user import User
 
 class UserRepository:
     def __init__(self, connection):
@@ -10,7 +11,6 @@ class UserRepository:
             bcrypt.gensalt()
         )
 
-
         rows = self._connection.execute(
             'INSERT INTO users (email, password, name) ' \
             'VALUES (%s, %s, %s) ' \
@@ -20,3 +20,20 @@ class UserRepository:
         row = rows[0]
         user.id = row['id']
         return user
+    
+    def authenticate(self, email, password):
+        result = self._connection.execute(
+            'SELECT * FROM users WHERE email = %s;',
+            [email]
+        )
+
+        if not result:
+            return None
+        
+        row = result[0]
+        stored_password = row['password'].encode('utf-8')
+
+        if bcrypt.checkpw(password.encode('utf-8'), stored_password):
+            return User(row['id'], row['email'], None, row['name'])
+        
+        return None
