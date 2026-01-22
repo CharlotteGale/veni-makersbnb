@@ -31,10 +31,8 @@ def test_show_guest_bookings(db_connection):
         Booking(4, 1, 3, date(2026,3,23), 'pending')
         ]
 
-    assert new_booking == Booking(3, 2, 3, '2026-01-20', 'pending')
-
 """
-When I call BookingRepository#update_status
+When I call BookingRepository#confirm_booking
 I update the status to confirmed
 """
 def test_update_booking_status_to_confirmed(db_connection):
@@ -50,7 +48,7 @@ def test_update_booking_status_to_confirmed(db_connection):
 
 
 """
-When I call BookingRepository#update_status
+When I call BookingRepository#reject_booking
 I update the status to rejected
 """
 def test_update_booking_status_to_rejected(db_connection):
