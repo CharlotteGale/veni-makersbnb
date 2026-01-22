@@ -61,9 +61,45 @@ def test_search_by_name_returns_matching_listings(db_connection):
                 160),
                 Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145)]
 
+"""
+When we call ListingRepository#search_by_name
+We get listings where the name partially matches the search keywor regardless of case.
+"""
+
+def test_search_by_name_returns_matching_listings_uppercase(db_connection):
+        db_connection.seed("seeds/makersbnb_veni.sql")
+        repo = ListingRepository(db_connection)
+
+        search_results = repo.search_by_name('SHOREDITCH')
+
+        assert search_results == [
+                Listing(2, 2, 'Shoreditch Loft Apartment',
+                'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.',
+                160),
+                Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145)]
+        
 
 """
-When we call ListingRepository#delete
+When we call ListingRepository#show_hosts_listings
+We get listings where the returned records only show that of the host (the complete list of their properties and no properties belonging to other hosts.) 
+
+"""
+
+def test_show_host_listings(db_connection):
+        db_connection.seed("seeds/makersbnb_veni.sql")
+        repo = ListingRepository(db_connection)
+
+        search_results = repo.show_host_listings(1)
+
+        assert search_results == [
+            Listing(1, 1, 'Cozy Canal Studio', 'Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.', 95),
+            Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145)
+        ]
+
+
+
+"""
+When we call ListingRepository#delete <-- /KS 22Jan2026 9:20AM/ we will come back to this if we have time 
 The listing record is deleted from the database.
 """
 
