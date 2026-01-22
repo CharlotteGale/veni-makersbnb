@@ -52,7 +52,7 @@
   </form>
 </div>
 
-<!-- AVAILABLE HOMES HEADER + PAGINATION -->
+<!-- AVAILABLE HOMES HEADER + ARROWS -->
 <div class="container d-flex align-items-center justify-content-between mb-4">
   <h2 class="mb-0">Available Homes</h2>
 
@@ -91,32 +91,40 @@
 
     {% for listing in listings %}
       <div class="col-md-4">
-        <div class="card h-100">
 
-          <img
-            src="{{ url_for(
-              'static',
-              filename='images/listings/' ~ (listing.image_filename or 'placeholder.jpg')
-            ) }}"
-            class="card-img-top"
-            alt="Photo of {{ listing.name }}"
-            style="height: 200px; object-fit: cover;"
-          >
+        <a
+          href="/listings/{{ listing.id }}"
+          class="text-decoration-none text-dark"
+        >
+          <div class="card h-100">
 
-          <div class="card-body">
-            <h5 class="card-title">{{ listing.name }}</h5>
-            <p class="card-text">{{ listing.description }}</p>
+            <img
+              src="{{ url_for(
+                'static',
+                filename='images/listings/' ~ (listing.image_filename or 'placeholder.jpg')
+              ) }}"
+              class="card-img-top"
+              alt="Photo of {{ listing.name }}"
+              style="height: 200px; object-fit: cover;"
+            >
+
+            <div class="card-body">
+              <h5 class="card-title">{{ listing.name }}</h5>
+              <p class="card-text">{{ listing.description }}</p>
+            </div>
+
+            <div class="card-footer bg-white border-0">
+              <strong>£{{ listing.price_per_night }}</strong> / night
+            </div>
+
           </div>
+        </a>
 
-          <div class="card-footer bg-white border-0">
-            <strong>£{{ listing.price_per_night }}</strong> / night
-          </div>
-
-        </div>
       </div>
     {% endfor %}
 
   </div>
 </div>
+
 
 {% endblock %}
