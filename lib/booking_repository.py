@@ -18,3 +18,9 @@ class BookingRepository:
             'UPDATE bookings SET status = %s WHERE id = %s;',
             ['confirmed', booking_id]
         )
+
+    def reject_booking(self, booking_id):
+        self._connection.execute(
+            'UPDATE bookings SET status = %s WHERE id = %s;',
+            ['rejected', booking_id]
+        )
