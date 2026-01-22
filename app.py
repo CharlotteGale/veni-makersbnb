@@ -3,7 +3,7 @@ from flask import Flask, request, render_template, redirect, session, flash
 
 from lib.database_connection import DatabaseConnection
 from lib.listing_repository import ListingRepository
-from lib.booking_repository import Booking
+from lib.booking_repository import BookingRepository
 from lib.user_repository import UserRepository
 from lib.user import User
 from pathlib import Path
@@ -25,6 +25,7 @@ connection.seed(
 
 
 listing_repository = ListingRepository(connection)
+booking_repository = BookingRepository(connection)
 user_repository = UserRepository(connection)
 
 # ======================
@@ -128,7 +129,6 @@ def host_listings():
     )
 
 
-
 @app.route("/guest/bookings")
 def guest_bookings():
     user_id = session.get("user_id")
@@ -136,15 +136,15 @@ def guest_bookings():
     # /KS 22Jan2026/ If user not logged in, bounce to login. I know we may be asking the user to login before they can even see this option in the NAV bar but adding in for extra safety in case the link to this route is shared and bypasses any "UI walls".
 
     if user_id is None:
-        flash("Please log in to view your listings.")
+        flash("Please log in to view your bookings.")
         return redirect("/login")
 
-    # /KS 22Jan2026/ Pull ONLY this guest bookings (secure server-side filter) - used filter search function from listing_repository.py
-    guest_bookings = booking_repository.show_host_listings(user_id)
+    # /KS 22Jan2026/ Pull ONLY this guest's bookings- used filter search function from booking_repository.py
+    bookings = booking_repository.show_guest_bookings(user_id)
 
     return render_template(
-        "host/listings.html", 
-        host_listings=listings # /KS 22Jan2026/ host_listings is the listings variablenow plugged into to HTML template for host/listings
+        "guest/bookings.html", 
+        user_guest_bookings=bookings # /KS 22Jan2026/ user_guest_bookings is the bookings variable now plugged into to HTML template for guest/bookings
     )
 
 # ======================
