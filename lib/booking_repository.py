@@ -6,11 +6,20 @@ class BookingRepository:
 
     def create(self, booking):
         rows = self._connection.execute(
-            'INSERT INTO bookings (listing_id, guest_id, date, status) ' \
-            'VALUES (%s, %s, %s, %s) ' \
+            'INSERT INTO bookings (listing_id, guest_id, date, status) '\
+            'VALUES (%s, %s, %s, %s) '\
             'RETURNING id;',
             [booking.listing_id, booking.guest_id, booking.date, booking.status]
         )
+        booking.id = rows[0]['id']
+        return booking
+
+    def all(self):
+        rows = self._connection.execute('SELECT * FROM bookings;')
+        return [
+            Booking(row['id'], row['listing_id'], row['guest_id'], str(row['date']), row['status'])
+            for row in rows
+        ]
         row = rows[0]
         booking.id = row['id']
         return booking

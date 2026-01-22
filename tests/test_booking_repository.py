@@ -12,6 +12,21 @@ def test_create_new_record(db_connection):
 
     new_booking = repo.create(Booking(None, 2, 8, '2026-01-20'))
 
+    assert new_booking == Booking(1, 2, 3, '2026-01-20', 'pending')
+
+"""
+When I call BookingRepository#create
+I create a new Booking object in the seed data
+"""
+
+def test_read_all_records(db_connection):
+    db_connection.seed("seeds/makersbnb_veni.sql")
+    repo = BookingRepository(db_connection)
+
+    new_booking = repo.create(Booking(None, 2, 3, '2026-01-20'))
+
+    assert repo.all() == [new_booking]
+    assert new_booking == Booking(3, 2, 3, '2026-01-20', 'pending')
     assert new_booking == Booking(5, 2, 8, '2026-01-20', 'pending')
 
 
