@@ -27,7 +27,7 @@ def test_show_guest_bookings(db_connection):
     search_results = repo.show_guest_bookings(3)
 
     assert search_results == [
-        Booking(3, 3, 3, date(2026,2,14), 'confirmed'),
+        Booking(3, 3, 3, date(2026,4,14), 'confirmed'),
         Booking(4, 1, 3, date(2026,3,23), 'pending')
         ]
 
@@ -76,3 +76,17 @@ def test_check_date_availability(db_connection):
     )
 
     assert is_available == True
+
+    not_available = repo.check_dates(
+        listing_id = 3,
+        date = '2026-02-14'
+    )
+
+    assert not_available == False
+
+    is_available_pending = repo.check_dates(
+        listing_id = 1,
+        date = '2026-03-01'
+    )
+
+    assert is_available_pending == True
