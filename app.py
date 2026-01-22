@@ -3,6 +3,7 @@ from flask import Flask, request, render_template, redirect, session, flash
 
 from lib.database_connection import DatabaseConnection
 from lib.listing_repository import ListingRepository
+from lib.booking_repository import BookingRepository
 from lib.user_repository import UserRepository
 from lib.user import User
 from pathlib import Path
@@ -27,6 +28,7 @@ connection.connect()
 
 
 listing_repository = ListingRepository(connection)
+booking_repository = BookingRepository(connection)
 user_repository = UserRepository(connection)
 booking_repository = BookingRepository(connection)
 
@@ -106,7 +108,19 @@ def logout():
 # Placeholders for drop down menu
 @app.route("/profile")
 def profile():
-    return "Profile page coming soon"
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        flash("Please log in to view your profile.")
+        return redirect("/login")
+
+    user = user_repository.find(user_id)
+
+    return render_template(
+        "profile.html",
+        user=user
+    )
+
 
 @app.route("/contact")
 def contact():
@@ -132,6 +146,23 @@ def host_listings():
     )
 
 
+@app.route("/guest/bookings")
+def guest_bookings():
+    user_id = session.get("user_id")
+
+    # /KS 22Jan2026/ If user not logged in, bounce to login. I know we may be asking the user to login before they can even see this option in the NAV bar but adding in for extra safety in case the link to this route is shared and bypasses any "UI walls".
+
+    if user_id is None:
+        flash("Please log in to view your bookings.")
+        return redirect("/login")
+    
+        # /KS 22Jan2026/ Pull ONLY this guest's bookings- used filter search function from booking_repository.py
+    bookings = booking_repository.show_guest_bookings(user_id)
+
+    return render_template(
+        "guest/bookings.html", 
+        user_guest_bookings=bookings # /KS 22Jan2026/ user_guest_bookings is the bookings variable now plugged into to HTML template for guest/bookings
+    )
 @app.route("/listings/<int:listing_id>")
 def listing_booking(listing_id):
     listing = listing_repository.find(listing_id)
@@ -160,7 +191,7 @@ def create_booking(listing_id):
     booking_repository.create(booking)
 
     flash("Booking request submitted!")
-    return redirect("/profile")
+    return redirect("/my-bookings")
 
 @app.route("/search", methods=["GET"])
 def search():
@@ -183,8 +214,24 @@ def search():
         query=query
     )
 
+@app.route("/my-bookings")
+def my_bookings():
+    # Make sure user is logged in
+    if not session.get("user_id"):
+        flash("You must be logged in to view your bookings")
+        return redirect("/login")
+    
+    guest_id = session["user_id"]
+    bookings = booking_repository.show_guest_bookings(guest_id)
 
+    # Optionally, get listing details for each booking
+    listings = {listing.id: listing for listing in listing_repository.all()}
 
+    return render_template(
+        "my_bookings.html",
+        bookings=bookings,
+        listings=listings
+    )
 
 # ======================
 # Run server last
