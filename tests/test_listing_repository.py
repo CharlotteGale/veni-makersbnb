@@ -61,6 +61,17 @@ def test_search_by_name_returns_matching_listings(db_connection):
                 160),
                 Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145)]
 
+def test_search_by_name_returns_matching_listings_uppercase(db_connection):
+        db_connection.seed("seeds/makersbnb_veni.sql")
+        repo = ListingRepository(db_connection)
+
+        search_results = repo.search_by_name('SHOREDITCH')
+
+        assert search_results == [
+                Listing(2, 2, 'Shoreditch Loft Apartment',
+                'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.',
+                160),
+                Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145)]
 
 """
 When we call ListingRepository#delete
