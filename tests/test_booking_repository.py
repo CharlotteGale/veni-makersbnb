@@ -61,3 +61,18 @@ def test_update_booking_status_to_rejected(db_connection):
 
     result = db_connection.execute('SELECT status FROM bookings WHERE id = %s;', [3])
     assert result[0]['status'] == 'rejected'
+
+"""
+When I call BookingRepository#check_dates
+I can check if a date is available or not
+"""
+def test_check_date_availability(db_connection):
+    db_connection.seed("seeds/makersbnb_veni.sql")
+    repo = BookingRepository(db_connection)
+
+    is_available = repo.check_dates(
+        listing_id = 1,
+        date = '2026-05-01'
+    )
+
+    assert is_available == True
