@@ -108,7 +108,19 @@ def logout():
 # Placeholders for drop down menu
 @app.route("/profile")
 def profile():
-    return "Profile page coming soon"
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        flash("Please log in to view your profile.")
+        return redirect("/login")
+
+    user = user_repository.find(user_id)
+
+    return render_template(
+        "profile.html",
+        user=user
+    )
+
 
 @app.route("/contact")
 def contact():
