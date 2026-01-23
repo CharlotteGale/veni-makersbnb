@@ -18,7 +18,7 @@ Ensure Booking object stringifies
 def test_booking_stringifies():
     booking = Booking(1, 2, 3, '2026-01-20')
 
-    assert str(booking) == "Booking(1, 2, 3, '2026-01-20', pending)"
+    assert str(booking) == "Booking(1, 2, 3, '2026-01-20', pending, None,None,None)"
 
 """
 Ensure 2 identical Booking objects are equal
