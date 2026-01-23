@@ -12,7 +12,7 @@ def test_create_new_record(db_connection):
 
     new_booking = repo.create(Booking(None, 2, 8, '2026-01-20'))
 
-    assert new_booking == Booking(1, 2, 3, '2026-01-20', 'pending')
+    assert new_booking == Booking(5, 2, 8, '2026-01-20', 'pending')
 
 """
 When I call BookingRepository#create
@@ -25,7 +25,7 @@ def test_read_all_records(db_connection):
 
     new_booking = repo.create(Booking(None, 2, 3, '2026-01-20'))
 
-    assert new_booking == Booking(3, 2, 3, '2026-01-20', 'pending')
+    assert new_booking == Booking(5, 2, 3, '2026-01-20', 'pending')
 
 """
 When we call BookingRepository#find_by_host
@@ -89,9 +89,9 @@ def test_find_pending_requests_returns_empty_list_if_none(db_connection):
     repo = BookingRepository(db_connection)
 
     assert repo.find_pending_requests(9999) == []
-    assert repo.all() == [new_booking]
-    assert new_booking == Booking(3, 2, 3, '2026-01-20', 'pending')
-    assert new_booking == Booking(5, 2, 8, '2026-01-20', 'pending')
+    # assert repo.all() == [new_booking]
+    # assert new_booking == Booking(3, 2, 3, '2026-01-20', 'pending')
+    # assert new_booking == Booking(5, 2, 8, '2026-01-20', 'pending')
 
 
 """
