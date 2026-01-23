@@ -22,7 +22,7 @@ jobs:
           port: 22
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "./Dockerfile, ./app.py, ./requirements.txt"
-          target: ~/message-server
+          target: ~/veni-makersbnb
 
       - name: Build and run on EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -33,13 +33,13 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -euo pipefail
-            cd ~/message-server
-            docker build --pull -t message-server:latest .
-            docker stop message-server || true
-            docker rm message-server || true
+            cd ~/veni-makersbnb
+            docker build --pull -t veni-makersbnb:latest .
+            docker stop veni-makersbnb || true
+            docker rm veni-makersbnb || true
             docker image prune -f || true
             docker run -d \
-              --name message-server \
+              --name veni-makersbnb \
               --restart unless-stopped \
               -p 5002:5002 \
               -e APP_ENV=PRODUCTION \
@@ -47,4 +47,4 @@ jobs:
               -e POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
               -e POSTGRES_HOST='${{ secrets.POSTGRES_HOST }}' \
               -e POSTGRES_DB='postgres' \
-              message-server:latest
+              veni-makersbnb:latest
