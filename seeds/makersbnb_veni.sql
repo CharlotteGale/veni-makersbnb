@@ -18,6 +18,7 @@ CREATE TABLE listings (
     name VARCHAR(255),
     description TEXT,
     price_per_night INTEGER,
+    image_filename VARCHAR(255) DEFAULT 'placeholder.jpg',
     CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -42,14 +43,14 @@ INSERT INTO users (email, password, name) VALUES
     ('guest2@example.com', 'hashed_password_6', 'Guest User 2'),
     ('guest3@example.com', 'hashed_password_7', 'Guest User 3'),
     ('guest4@example.com', 'hashed_password_8', 'Guest User 4');
-    
-INSERT INTO listings (user_id, name, description, price_per_night) VALUES 
-    (1, 'Cozy Canal Studio', 'Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.', 95),
-    (2, 'Shoreditch Loft Apartment', 'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.', 160),
-    (3, 'Countryside Barn Retreat', 'Peaceful converted barn with countryside walks, a wood burner, and beautiful sunset views.', 140),
-    (2, 'Luxury City Penthouse', 'Modern penthouse with skyline views, floor-to-ceiling windows, balcony seating, and premium finishes.', 320),
-    (4, 'Budget-Friendly Private Room', 'Simple private room in a shared flat with great transport links — clean, safe, and ideal for solo travellers.', 55),
-    (1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145);
+
+INSERT INTO listings (user_id, name, description, price_per_night,image_filename) VALUES 
+    (1, 'Cozy Canal Studio', 'Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.', 95,'cosy_canal_studio.jpg'),
+    (2, 'Shoreditch Loft Apartment', 'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.', 160, 'shoreditch_loft_apartment.jpg'),
+    (3, 'Countryside Barn Retreat', 'Peaceful converted barn with countryside walks, a wood burner, and beautiful sunset views.', 140,'countryside_barn_retreat.jpg'),
+    (2, 'Luxury City Penthouse', 'Modern penthouse with skyline views, floor-to-ceiling windows, balcony seating, and premium finishes.', 320, 'luxury_city_penthouse.jpg'),
+    (4, 'Budget-Friendly Private Room', 'Simple private room in a shared flat with great transport links — clean, safe, and ideal for solo travellers.', 55,'budget_friendly_private_room.jpg'),
+    (1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145,'trendy_shoreditch_studio.jpg');
 
 INSERT INTO bookings (listing_id, guest_id, date, status) VALUES
     (1, 5, '2026-03-01', 'pending'),
