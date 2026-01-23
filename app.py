@@ -127,6 +127,13 @@ def profile():
 def contact():
     return "Contact page coming soon"
 
+@app.route("/terms")
+def terms_and_conditions():
+    return render_template("legal/terms_and_conditions.html")
+
+@app.route("/privacy")
+def privacy_statement():
+    return render_template("legal/privacy_statement.html")
 
 @app.route("/host/listings")
 def host_listings():
