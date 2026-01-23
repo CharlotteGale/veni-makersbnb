@@ -49,3 +49,15 @@ def web_client():
     app.config['TESTING'] = True # This gets us better errors
     with app.test_client() as client:
         yield client
+
+@pytest.fixture
+def logged_in_page(page, test_web_address, db_connection):
+    import random
+    unique_email = f"test{random.randint(1000, 9999)}@example.com"
+    page.goto(f"http://{test_web_address}/signup")
+    page.fill("input[name='name']", "Test User")
+    page.fill("input[name='email']", unique_email)
+    page.fill("input[name='password']", "password123")
+    page.locator("button:has-text('Create account')").click()
+    page.wait_for_url(f"http://{test_web_address}/", timeout=5000)
+    return page
