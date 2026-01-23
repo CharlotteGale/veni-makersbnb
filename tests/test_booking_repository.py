@@ -27,16 +27,10 @@ def test_show_guest_bookings(db_connection):
     search_results = repo.show_guest_bookings(3)
 
     assert search_results == [
-        Booking(3, 3, 3, date(2026,2,14), 'confirmed'), #listing id (2nd pos) = 3
-        Booking(4, 1, 3, date(2026,3,23), 'pending') #listing id (2nd pos) = 1
-        ]
-    #KS 22Jan2026 asserting listing details from JOIN in booking_details table (out of scope in __eq__ in booking.py)
-    assert search_results[0].listing_name == "Countryside Barn Retreat"
-    assert search_results[0].listing_description == "Peaceful converted barn with countryside walks, a wood burner, and beautiful sunset views."
-    assert search_results[0].price_per_night == 140
-    assert search_results[1].listing_name == "Cozy Canal Studio"
-    assert search_results[1].listing_description == "Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape."
-    assert search_results[1].price_per_night == 95
+        Booking(3, 3, 3, date(2026,2,14), 'confirmed',"Countryside Barn Retreat","Peaceful converted barn with countryside walks, a wood burner, and beautiful sunset views.",140), #listing id (2nd pos) = 3
+        Booking(4, 1, 3, date(2026,3,23), 'pending',"Cozy Canal Studio", "Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.", 95)
+        ]  #listing id (2nd pos) = 1
+
 
 """
 When I call BookingRepository#update_status
@@ -68,3 +62,4 @@ def test_update_booking_status_to_rejected(db_connection):
 
     result = db_connection.execute('SELECT status FROM bookings WHERE id = %s;', [3])
     assert result[0]['status'] == 'rejected'
+

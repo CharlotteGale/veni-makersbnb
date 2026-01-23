@@ -10,13 +10,7 @@ class Booking:
         self.price_per_night = price_per_night
 
     def __repr__(self):
-        return f"Booking({self.id}, {self.listing_id}, {self.guest_id}, {self.date!r}, {self.status})"
+        return f"Booking({self.id}, {self.listing_id}, {self.guest_id}, {self.date!r}, {self.status}, {self.listing_name},{self.listing_description},{self.price_per_night})"
     
     def __eq__(self, other):
-        return (
-        self.id == other.id and
-        self.listing_id == other.listing_id and
-        self.guest_id == other.guest_id and
-        self.date == other.date and
-        self.status == other.status
-        )
+        return self.__dict__ == other.__dict__
