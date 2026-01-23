@@ -27,7 +27,7 @@ RUN pip install -r requirements.txt
 
 # So we're going to tell Docker here that when we _do_ want to run it, this is
 # what it should run:
-CMD ["python", "seed_dev_database.py"]
+#CMD ["python", "seed_dev_database.py"]
 
 CMD ["python", "app.py"]
 
