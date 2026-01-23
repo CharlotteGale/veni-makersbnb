@@ -17,6 +17,10 @@ from lib.booking_repository import BookingRepository
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
 
+if os.environ.get("APP_ENV") == "PRODUCTION":
+    conn = DatabaseConnection()
+    conn.connect()
+    conn.seed('seeds/makersbnb_veni.sql')
 # ======================
 # Database setup
 # ======================
