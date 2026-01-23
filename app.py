@@ -173,8 +173,6 @@ def host_listings():
         accepted_bookings=accepted_with_guests
     )
 
-from flask import request, redirect, render_template, session, flash
-
 @app.route("/host/add_listing", methods=["GET", "POST"])
 def add_listing():
     user_id = session.get("user_id")
@@ -315,7 +313,12 @@ def my_bookings():
     
     guest_id = session["user_id"]
     bookings = booking_repository.show_guest_bookings(guest_id)
-
+    # Optionally, get listing details for each booking    
+    listings = {listing.id: listing for listing in listing_repository.all()}
+    return render_template(
+        "my_bookings.html",
+        bookings=bookings,
+        listings=listings)
 
 
 # Image adding stuff
