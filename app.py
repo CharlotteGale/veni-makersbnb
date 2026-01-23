@@ -125,7 +125,7 @@ def profile():
 
 @app.route("/contact")
 def contact():
-    return "Contact page coming soon"
+    return render_template("contact.html")
 
 @app.route("/terms")
 def terms_and_conditions():
