@@ -10,12 +10,12 @@ def test_get_all_records(db_connection):
     repo = ListingRepository(db_connection)
 
     assert repo.all() == [
-        Listing(1, 1, 'Cozy Canal Studio', 'Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.', 95),
-        Listing(2, 2, 'Shoreditch Loft Apartment', 'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.', 160),
-        Listing(3, 3, 'Countryside Barn Retreat', 'Peaceful converted barn with countryside walks, a wood burner, and beautiful sunset views.', 140),
-        Listing(4, 2, 'Luxury City Penthouse', 'Modern penthouse with skyline views, floor-to-ceiling windows, balcony seating, and premium finishes.', 320),
-        Listing(5, 4, 'Budget-Friendly Private Room', 'Simple private room in a shared flat with great transport links — clean, safe, and ideal for solo travellers.', 55),
-        Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145)
+        Listing(1, 1, 'Cozy Canal Studio', 'Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.', 95, 'cosy_canal_studio.jpg'),
+        Listing(2, 2, 'Shoreditch Loft Apartment', 'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.', 160, 'shoreditch_loft_apartment.jpg'),
+        Listing(3, 3, 'Countryside Barn Retreat', 'Peaceful converted barn with countryside walks, a wood burner, and beautiful sunset views.', 140, 'countryside_barn_retreat.jpg'),
+        Listing(4, 2, 'Luxury City Penthouse', 'Modern penthouse with skyline views, floor-to-ceiling windows, balcony seating, and premium finishes.', 320, 'luxury_city_penthouse.jpg'),
+        Listing(5, 4, 'Budget-Friendly Private Room', 'Simple private room in a shared flat with great transport links — clean, safe, and ideal for solo travellers.', 55, 'budget_friendly_private_room.jpg'),
+        Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145, 'trendy_shoreditch_studio.jpg')
     ]
 
 
@@ -42,7 +42,7 @@ def test_get_single_record(db_connection):
     db_connection.seed("seeds/makersbnb_veni.sql")
     repo = ListingRepository(db_connection)
     listing = repo.find(2)
-    assert listing == Listing(2, 2, 'Shoreditch Loft Apartment', 'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.', 160)
+    assert listing == Listing(2, 2, 'Shoreditch Loft Apartment', 'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.', 160, 'shoreditch_loft_apartment.jpg')
 
 """
 When we call ListingRepository#search_by_name
@@ -57,9 +57,8 @@ def test_search_by_name_returns_matching_listings(db_connection):
 
         assert search_results == [
                 Listing(2, 2, 'Shoreditch Loft Apartment',
-                'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.',
-                160),
-                Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145)]
+                'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.', 160, 'shoreditch_loft_apartment.jpg'),
+                Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145, 'trendy_shoreditch_studio.jpg')]
 
 """
 When we call ListingRepository#search_by_name
@@ -75,8 +74,8 @@ def test_search_by_name_returns_matching_listings_uppercase(db_connection):
         assert search_results == [
                 Listing(2, 2, 'Shoreditch Loft Apartment',
                 'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.',
-                160),
-                Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145)]
+                160, 'shoreditch_loft_apartment.jpg'),
+                Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145, 'trendy_shoreditch_studio.jpg')]
         
 
 """
@@ -92,8 +91,8 @@ def test_show_host_listings(db_connection):
         search_results = repo.show_host_listings(1)
 
         assert search_results == [
-            Listing(1, 1, 'Cozy Canal Studio', 'Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.', 95),
-            Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145)
+            Listing(1, 1, 'Cozy Canal Studio', 'Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.', 95, 'cosy_canal_studio.jpg'),
+            Listing(6, 1, 'Trendy Shoreditch Studio', 'Awesome space near coffee shops and bars, great for experiencing this part of london in all its hipster glory', 145, 'trendy_shoreditch_studio.jpg')
         ]
 
 
