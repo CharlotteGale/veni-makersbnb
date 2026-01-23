@@ -119,5 +119,18 @@ class BookingRepository:
         )
 
         return len(rows) == 0
+    
+    def get_pending_bookings_for_host(self, user_id):
+        rows = self._connection.execute(
+            'SELECT b.* FROM bookings b ' \
+            'JOIN listings l ON b.listing_id = l.id ' \
+            'WHERE l.user_id = %s AND b.status = %s ' \
+            'ORDER BY b.date, b.id;',
+            [user_id, 'pending']
+        )
+        return [
+            Booking(row['id'], row['listing_id'], row['guest_id'], str(row['date']), row['status'])
+            for row in rows
+        ]
 
         

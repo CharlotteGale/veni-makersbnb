@@ -1,23 +1,117 @@
 {% extends "base.html" %}
 
-<!-- /KS 22Jan2026/ V basic HTML stand in for host listings, I think this is a vaguely sensible starter for 10 but havent been able to see it on front-end as I don't know how to login ha! It for sure wont be as pretty as the rest of your front-end so please feel free to edit (heavily) as you see fit!-->
+{% block title %}My Listings · makersbnb{% endblock %}
 
 {% block content %}
-<h1>Your listings</h1>
+<div class="container d-flex align-items-center justify-content-between my-5">
+  <div class="d-flex align-items-center gap-3">
+    <h2 class="mb-0">Your Listings</h2>
+    <a href="#" class="btn btn-secondary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+      →
+    </a>
+  </div>
 
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline-secondary btn-sm">←</button>
+    <button class="btn btn-outline-secondary btn-sm">→</button>
+  </div>
+</div>
+{% if pending_bookings %}
+  <div class="container mb-5">
+    <h3 class="mb-4">Pending Booking Requests</h3>
+    
+    <div class="row g-3">
+      {% for item in pending_bookings %}
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-5">
+                  <h5 class="card-title mb-1">{{ item.listing.name }}</h5>
+                  <p class="text-muted mb-0">
+                    <small>Requested by: <strong>{{ item.guest.name }}</strong></small>
+                  </p>
+                </div>
+                
+                <div class="col-md-3">
+                  <p class="mb-0">
+                    <i class="bi bi-calendar-event"></i>
+                    <strong>{{ item.booking.date }}</strong>
+                  </p>
+                  <p class="text-muted mb-0">
+                    <small>£{{ item.listing.price_per_night }} / night</small>
+                  </p>
+                </div>
+                
+                <div class="col-md-4 text-end">
+                  <form method="POST" action="/host/bookings/{{ item.booking.id }}/confirm" style="display: inline;">
+                    <button type="submit" class="btn btn-success btn-sm me-2">
+                      <i class="bi bi-check-circle"></i> Accept
+                    </button>
+                  </form>
+                  
+                  <form method="POST" action="/host/bookings/{{ item.booking.id }}/reject" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      <i class="bi bi-x-circle"></i> Reject
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
 
 {% if host_listings %}
-    <ul>
-        {% for listing in host_listings %}
-            <li>
-                <strong>{{ listing.name }}</strong><br>
-                {{ listing.description }}<br>
-                £{{ listing.price_per_night }} / night <!-- /KS 22Jan2026/ adding i in £ here to preface the number we have in seed data, hopefully this looks ok on front-end -->
-            </li>
-            <hr>
-        {% endfor %}
-    </ul>
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+
+      {% for listing in host_listings %}
+        <div class="col-md-4">
+          <div class="card h-100">
+
+            <img
+              src="{{ url_for(
+                'static',
+                filename='images/listings/' ~ (listing.image_filename or 'placeholder.jpg')
+              ) }}"
+              class="card-img-top"
+              alt="Photo of {{ listing.name }}"
+              style="height: 200px; object-fit: cover;"
+            >
+
+            <div class="card-body">
+              <h5 class="card-title">{{ listing.name }}</h5>
+              <p class="card-text">{{ listing.description }}</p>
+            </div>
+
+            <div class="card-footer bg-white border-0">
+              <strong>£{{ listing.price_per_night }}</strong> / night
+            </div>
+
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+
 {% else %}
-    <p>You don’t have any listings yet.</p>
+  
+<div class="container text-center" style="margin-top: 120px; margin-bottom: 120px;">
+    <p class="fs-3 fst-italic text-muted">You have no properties listed</p>
+</div>
+
 {% endif %}
+
+  <div class="container text-center my-5 mb-5 pb-5">
+    <a href="/host/add_listing" class="btn btn-secondary btn-lg px-5 py-3 rounded-pill">
+      Add a New Listing
+    </a>
+  </div>
+
 {% endblock %}
