@@ -138,15 +138,32 @@ def host_listings():
     # Pull ONLY this host's listings
     listings = listing_repository.show_host_listings(user_id)
     
-    # Get pending bookings for this host's listings
-    pending_bookings = booking_repository.get_pending_bookings_for_host(user_id)
+    # Get all bookings for this host's listings
+    all_host_bookings = booking_repository.find_by_host(user_id)
     
-    # Get guest information for each booking
-    bookings_with_guests = []
+    # Filter for pending bookings
+    pending_bookings = [b for b in all_host_bookings if b.status == 'pending']
+    
+    # Filter for confirmed bookings
+    accepted_bookings = [b for b in all_host_bookings if b.status == 'confirmed']
+    
+    # Get guest information for pending bookings
+    pending_with_guests = []
     for booking in pending_bookings:
         guest = user_repository.find(booking.guest_id)
         listing = listing_repository.find(booking.listing_id)
-        bookings_with_guests.append({
+        pending_with_guests.append({
+            'booking': booking,
+            'guest': guest,
+            'listing': listing
+        })
+    
+    # Get guest information for accepted bookings
+    accepted_with_guests = []
+    for booking in accepted_bookings:
+        guest = user_repository.find(booking.guest_id)
+        listing = listing_repository.find(booking.listing_id)
+        accepted_with_guests.append({
             'booking': booking,
             'guest': guest,
             'listing': listing
@@ -155,7 +172,8 @@ def host_listings():
     return render_template(
         "host/listings.html", 
         host_listings=listings,
-        pending_bookings=bookings_with_guests
+        pending_bookings=pending_with_guests,
+        accepted_bookings=accepted_with_guests
     )
 
 from flask import request, redirect, render_template, session, flash
