@@ -11,13 +11,14 @@ def test_listing_constructs():
     assert listing.name == "test name"
     assert listing.description == "test description"
     assert listing.price_per_night == 20
+    
 
 '''
 We want to ensure the object stringifies
 '''
 def test_listing_stringifies():
     listing = Listing(1, 1, "test name", "test description", 20)
-    assert str(listing) == "Listing(1, 1, test name, test description, 20)"
+    assert str(listing) == "Listing(1, 1, test name, test description, 20,placeholder.jpg)"
 
 """
 We want two identical Listing objects to be equal
