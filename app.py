@@ -10,6 +10,7 @@ from pathlib import Path
 from lib.booking import Booking
 from lib.booking_repository import BookingRepository
 from lib.listing import Listing
+from werkzeug.utils import secure_filename
 
 # ======================
 # Create Flask app
@@ -176,16 +177,25 @@ def add_listing():
         return redirect("/login")
 
     if request.method == "POST":
+        image_filename = None
+
+        file = request.files.get("image")
+
+        if file and file.filename != "" and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            image_filename = filename
+
         listing = Listing(
-            id=None,
-            name=request.form["name"],
-            description=request.form["description"],
-            price_per_night=request.form["price_per_night"],
-            user_id=user_id,
+            None,
+            user_id,
+            request.form["name"],
+            request.form["description"],
+            request.form["price_per_night"],
+            image_filename
         )
 
         listing_repository.create(listing)
-
         flash("Listing added successfully!")
         return redirect("/host/listings")
 
@@ -305,6 +315,17 @@ def my_bookings():
         bookings=bookings,
         listings=listings
     )
+
+# Image adding stuff
+UPLOAD_FOLDER = "static/images/listings"
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+def allowed_file(filename):
+    return "." in filename and \
+           filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 
 # ======================
 # Run server last
