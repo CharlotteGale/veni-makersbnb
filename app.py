@@ -9,7 +9,7 @@ from lib.user import User
 from pathlib import Path
 from lib.booking import Booking
 from lib.booking_repository import BookingRepository
-
+from lib.listing import Listing
 
 # ======================
 # Create Flask app
@@ -131,19 +131,85 @@ def contact():
 def host_listings():
     user_id = session.get("user_id")
 
-    # /KS 22Jan2026/ If user not logged in, bounce to login. I know we may be asking the user to login before they can even see this option in the NAV bar but adding in for extra safety in case the link to this route is shared and bypasses any "UI walls".
-
     if user_id is None:
         flash("Please log in to view your listings.")
         return redirect("/login")
 
-    # /KS 22Jan2026/ Pull ONLY this host's listings (secure server-side filter) - used filter search function from listing_repository.py
+    # Pull ONLY this host's listings
     listings = listing_repository.show_host_listings(user_id)
+    
+    # Get pending bookings for this host's listings
+    pending_bookings = booking_repository.get_pending_bookings_for_host(user_id)
+    
+    # Get guest information for each booking
+    bookings_with_guests = []
+    for booking in pending_bookings:
+        guest = user_repository.find(booking.guest_id)
+        listing = listing_repository.find(booking.listing_id)
+        bookings_with_guests.append({
+            'booking': booking,
+            'guest': guest,
+            'listing': listing
+        })
 
     return render_template(
         "host/listings.html", 
-        host_listings=listings # /KS 22Jan2026/ host_listings is the listings variablenow plugged into to HTML template for host/listings
+        host_listings=listings,
+        pending_bookings=bookings_with_guests
     )
+
+from flask import request, redirect, render_template, session, flash
+
+@app.route("/host/add_listing", methods=["GET", "POST"])
+def add_listing():
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        flash("Please log in to add a listing.")
+        return redirect("/login")
+
+    if request.method == "POST":
+        listing = Listing(
+            id=None,
+            name=request.form["name"],
+            description=request.form["description"],
+            price_per_night=request.form["price_per_night"],
+            user_id=user_id,
+        )
+
+        listing_repository.create(listing)
+
+        flash("Listing added successfully!")
+        return redirect("/host/listings")
+
+    return render_template("host/add_listing.html")
+
+@app.route("/host/bookings/<int:booking_id>/confirm", methods=["POST"])
+def confirm_booking(booking_id):
+    user_id = session.get("user_id")
+    
+    if user_id is None:
+        flash("Please log in to manage bookings.")
+        return redirect("/login")
+    
+    booking_repository.confirm_booking(booking_id)
+    flash("Booking confirmed successfully!")
+    
+    return redirect("/host/listings")
+
+
+@app.route("/host/bookings/<int:booking_id>/reject", methods=["POST"])
+def reject_booking(booking_id):
+    user_id = session.get("user_id")
+    
+    if user_id is None:
+        flash("Please log in to manage bookings.")
+        return redirect("/login")
+    
+    booking_repository.reject_booking(booking_id)
+    flash("Booking rejected.")
+    
+    return redirect("/host/listings")
 
 
 @app.route("/guest/bookings")

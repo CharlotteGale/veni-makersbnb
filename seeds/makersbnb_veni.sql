@@ -42,7 +42,7 @@ INSERT INTO users (email, password, name) VALUES
     ('guest2@example.com', 'hashed_password_6', 'Guest User 2'),
     ('guest3@example.com', 'hashed_password_7', 'Guest User 3'),
     ('guest4@example.com', 'hashed_password_8', 'Guest User 4');
-
+    
 INSERT INTO listings (user_id, name, description, price_per_night) VALUES 
     (1, 'Cozy Canal Studio', 'Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.', 95),
     (2, 'Shoreditch Loft Apartment', 'Trendy open-plan loft in the heart of Shoreditch, minutes from coffee spots, nightlife, and the Tube.', 160),
