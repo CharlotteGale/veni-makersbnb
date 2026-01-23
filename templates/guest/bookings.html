@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-<!-- /KS 22Jan2026/ Again, v basic HTML stand in for guest bookinigs, I think this is a vaguely sensible starter for 10 but havent been able to see it on front-end as I don't know how to login ha! It for sure wont be as pretty as the rest of your front-end so please feel free to edit (heavily) as you see fit!-->
+<!-- /KS 22Jan2026/ basic HTML stand in for guest bookings -->
 
 {% block content %}
 <h1>Your Bookings</h1>
@@ -10,9 +10,11 @@
     <ul>
         {% for booking in user_guest_bookings %}
             <li>
-                <strong>{{ booking.listing_id }}</strong><br>
-                {{ booking.date }}<br>
-                {{ booking.status }}<br>
+                <strong>{{ booking.listing_name }}</strong><br>
+                {{ booking.listing_description }}<br>
+                £{{ booking.price_per_night }} / night<br>
+                Date: {{ booking.date }}<br>
+                Booking Status: {{ booking.status }}<br>
             </li>
             <hr>
         {% endfor %}

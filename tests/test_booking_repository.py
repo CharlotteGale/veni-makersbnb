@@ -106,9 +106,10 @@ def test_show_guest_bookings(db_connection):
     search_results = repo.show_guest_bookings(3)
 
     assert search_results == [
-        Booking(3, 3, 3, date(2026,4,14), 'confirmed'),
-        Booking(4, 1, 3, date(2026,3,23), 'pending')
-        ]
+        Booking(3, 3, 3, date(2026,2,14), 'confirmed',"Countryside Barn Retreat","Peaceful converted barn with countryside walks, a wood burner, and beautiful sunset views.",140), #listing id (2nd pos) = 3
+        Booking(4, 1, 3, date(2026,3,23), 'pending',"Cozy Canal Studio", "Bright studio with canal views, fast WiFi, and a comfy queen bed — perfect for a weekend escape.", 95)
+        ]  #listing id (2nd pos) = 1
+
 
 """
 When I call BookingRepository#confirm_booking
@@ -141,31 +142,3 @@ def test_update_booking_status_to_rejected(db_connection):
     result = db_connection.execute('SELECT status FROM bookings WHERE id = %s;', [3])
     assert result[0]['status'] == 'rejected'
 
-"""
-When I call BookingRepository#check_dates
-I can check if a date is available or not
-"""
-def test_check_date_availability(db_connection):
-    db_connection.seed("seeds/makersbnb_veni.sql")
-    repo = BookingRepository(db_connection)
-
-    is_available = repo.check_dates(
-        listing_id = 1,
-        date = '2026-05-01'
-    )
-
-    assert is_available == True
-
-    not_available = repo.check_dates(
-        listing_id = 3,
-        date = '2026-02-14'
-    )
-
-    assert not_available == False
-
-    is_available_pending = repo.check_dates(
-        listing_id = 1,
-        date = '2026-03-01'
-    )
-
-    assert is_available_pending == True

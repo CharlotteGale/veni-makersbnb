@@ -239,13 +239,15 @@ def guest_bookings():
         flash("Please log in to view your bookings.")
         return redirect("/login")
     
-        # /KS 22Jan2026/ Pull ONLY this guest's bookings- used filter search function from booking_repository.py
+    # /KS 22Jan2026/ Pull ONLY this guest's bookings- used filter search function from booking_repository.py
     bookings = booking_repository.show_guest_bookings(user_id)
 
     return render_template(
         "guest/bookings.html", 
         user_guest_bookings=bookings # /KS 22Jan2026/ user_guest_bookings is the bookings variable now plugged into to HTML template for guest/bookings
     )
+
+
 @app.route("/listings/<int:listing_id>")
 def listing_booking(listing_id):
     listing = listing_repository.find(listing_id)
@@ -307,14 +309,7 @@ def my_bookings():
     guest_id = session["user_id"]
     bookings = booking_repository.show_guest_bookings(guest_id)
 
-    # Optionally, get listing details for each booking
-    listings = {listing.id: listing for listing in listing_repository.all()}
 
-    return render_template(
-        "my_bookings.html",
-        bookings=bookings,
-        listings=listings
-    )
 
 # Image adding stuff
 UPLOAD_FOLDER = "static/images/listings"
