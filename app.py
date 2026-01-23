@@ -9,7 +9,8 @@ from lib.user import User
 from pathlib import Path
 from lib.booking import Booking
 from lib.booking_repository import BookingRepository
-
+from lib.listing import Listing
+from werkzeug.utils import secure_filename
 
 # ======================
 # Create Flask app
@@ -108,7 +109,19 @@ def logout():
 # Placeholders for drop down menu
 @app.route("/profile")
 def profile():
-    return "Profile page coming soon"
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        flash("Please log in to view your profile.")
+        return redirect("/login")
+
+    user = user_repository.find(user_id)
+
+    return render_template(
+        "profile.html",
+        user=user
+    )
+
 
 @app.route("/contact")
 def contact():
@@ -119,19 +132,101 @@ def contact():
 def host_listings():
     user_id = session.get("user_id")
 
-    # /KS 22Jan2026/ If user not logged in, bounce to login. I know we may be asking the user to login before they can even see this option in the NAV bar but adding in for extra safety in case the link to this route is shared and bypasses any "UI walls".
-
     if user_id is None:
         flash("Please log in to view your listings.")
         return redirect("/login")
 
-    # /KS 22Jan2026/ Pull ONLY this host's listings (secure server-side filter) - used filter search function from listing_repository.py
     listings = listing_repository.show_host_listings(user_id)
+    all_host_bookings = booking_repository.find_by_host(user_id)
+    pending_bookings = [b for b in all_host_bookings if b.status == 'pending']
+    accepted_bookings = [b for b in all_host_bookings if b.status == 'confirmed']
+    pending_with_guests = []
+    for booking in pending_bookings:
+        guest = user_repository.find(booking.guest_id)
+        listing = listing_repository.find(booking.listing_id)
+        pending_with_guests.append({
+            'booking': booking,
+            'guest': guest,
+            'listing': listing
+        })
+    accepted_with_guests = []
+    for booking in accepted_bookings:
+        guest = user_repository.find(booking.guest_id)
+        listing = listing_repository.find(booking.listing_id)
+        accepted_with_guests.append({
+            'booking': booking,
+            'guest': guest,
+            'listing': listing
+        })
 
     return render_template(
         "host/listings.html", 
-        host_listings=listings # /KS 22Jan2026/ host_listings is the listings variablenow plugged into to HTML template for host/listings
+        host_listings=listings,
+        pending_bookings=pending_with_guests,
+        accepted_bookings=accepted_with_guests
     )
+
+from flask import request, redirect, render_template, session, flash
+
+@app.route("/host/add_listing", methods=["GET", "POST"])
+def add_listing():
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        flash("Please log in to add a listing.")
+        return redirect("/login")
+
+    if request.method == "POST":
+        image_filename = None
+
+        file = request.files.get("image")
+
+        if file and file.filename != "" and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            image_filename = filename
+
+        listing = Listing(
+            None,
+            user_id,
+            request.form["name"],
+            request.form["description"],
+            request.form["price_per_night"],
+            image_filename
+        )
+
+        listing_repository.create(listing)
+        flash("Listing added successfully!")
+        return redirect("/host/listings")
+
+    return render_template("host/add_listing.html")
+
+@app.route("/host/bookings/<int:booking_id>/confirm", methods=["POST"])
+def confirm_booking(booking_id):
+    user_id = session.get("user_id")
+    
+    if user_id is None:
+        flash("Please log in to manage bookings.")
+        return redirect("/login")
+    
+    booking_repository.confirm_booking(booking_id)
+    flash("Booking confirmed successfully!")
+    
+    return redirect("/host/listings")
+
+
+@app.route("/host/bookings/<int:booking_id>/reject", methods=["POST"])
+def reject_booking(booking_id):
+    user_id = session.get("user_id")
+    
+    if user_id is None:
+        flash("Please log in to manage bookings.")
+        return redirect("/login")
+    
+    booking_repository.reject_booking(booking_id)
+    flash("Booking rejected.")
+    
+    return redirect("/host/listings")
 
 
 @app.route("/guest/bookings")
@@ -181,7 +276,7 @@ def create_booking(listing_id):
     booking_repository.create(booking)
 
     flash("Booking request submitted!")
-    return redirect("/profile")
+    return redirect("/my-bookings")
 
 @app.route("/search", methods=["GET"])
 def search():
@@ -204,6 +299,26 @@ def search():
         query=query
     )
 
+@app.route("/my-bookings")
+def my_bookings():
+    # Make sure user is logged in
+    if not session.get("user_id"):
+        flash("You must be logged in to view your bookings")
+        return redirect("/login")
+    
+    guest_id = session["user_id"]
+    bookings = booking_repository.show_guest_bookings(guest_id)
+
+
+
+# Image adding stuff
+UPLOAD_FOLDER = "static/images/listings"
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+def allowed_file(filename):
+    return "." in filename and \
+           filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 

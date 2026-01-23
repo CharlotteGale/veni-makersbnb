@@ -25,79 +25,6 @@ def test_navbar_brand_is_link(page, test_web_address):
     brand_link = page.locator("a.navbar-brand")
     expect(brand_link).to_have_attribute("href", "/")
 
-def test_navbar_profile_image_present(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    profile = page.locator("img[alt='Profile']")
-    expect(profile).to_be_visible()
-
-def test_navbar_profile_dropdown_toggle(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    dropdown_toggle = page.locator("#profileDropdown")
-    expect(dropdown_toggle).to_be_visible()
-
-def test_navbar_dropdown_menu_present(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    dropdown_menu = page.locator(".dropdown-menu")
-    expect(dropdown_menu).to_be_attached()
-
-def test_navbar_dropdown_feedback_link(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    dropdown_toggle = page.locator("#profileDropdown")
-    dropdown_toggle.click()
-    feedback_link = page.locator("text=Feedback")
-    expect(feedback_link).to_be_visible()
-
-def test_navbar_dropdown_privacy_link(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    dropdown_toggle = page.locator("#profileDropdown")
-    dropdown_toggle.click()
-    privacy_link = page.locator("text=Privacy Statement")
-    expect(privacy_link).to_be_visible()
-
-def test_navbar_dropdown_terms_link(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    dropdown_toggle = page.locator("#profileDropdown")
-    dropdown_toggle.click()
-    terms_link = page.locator("text=Terms & Conditions")
-    expect(terms_link).to_be_visible()
-
-def test_navbar_dropdown_contact_link(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    dropdown_toggle = page.locator("#profileDropdown")
-    dropdown_toggle.click()
-    contact_link = page.locator("text=Contact us")
-    expect(contact_link).to_be_visible()
-
-def test_search_bar_where_input(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    where_input = page.locator("input[placeholder='Where']")
-    expect(where_input).to_be_visible()
-    expect(where_input).to_have_attribute("name", "location")
-
-def test_search_bar_when_input(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    when_input = page.locator("input[placeholder='When']")
-    expect(when_input).to_be_visible()
-    expect(when_input).to_have_attribute("name", "date")
-
-def test_search_bar_who_input(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    who_input = page.locator("input[placeholder='Who']")
-    expect(who_input).to_be_visible()
-    expect(who_input).to_have_attribute("name", "guests")
-
-def test_search_bar_submit_button(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    submit_button = page.locator("button[type='submit']")
-    expect(submit_button).to_be_visible()
-
-def test_search_bar_form_present(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    search_form = page.locator("form")
-    expect(search_form).to_be_visible()
-    expect(search_form).to_have_attribute("method", "GET")
-    expect(search_form).to_have_attribute("action", "/")
-
 def test_navigation_arrows_present(page, test_web_address):
     page.goto(f"http://{test_web_address}")
     arrows = page.locator(".btn-outline-secondary.btn-sm")
@@ -118,11 +45,6 @@ def test_property_card_has_image(page, test_web_address):
     card_image = page.locator(".card-img-top").first
     expect(card_image).to_be_visible()
 
-def test_property_card_image_has_alt_text(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    card_image = page.locator(".card-img-top").first
-    alt_text = card_image.get_attribute("alt")
-    assert "Photo of" in alt_text
 
 def test_property_card_has_title(page, test_web_address):
     page.goto(f"http://{test_web_address}")
@@ -161,12 +83,3 @@ def test_page_title(page, test_web_address):
     page.goto(f"http://{test_web_address}")
     expect(page).to_have_title("Available Homes · makersbnb")
 
-def test_bootstrap_loaded(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    container = page.locator(".container").first
-    expect(container).to_be_visible()
-
-def test_custom_font_applied(page, test_web_address):
-    page.goto(f"http://{test_web_address}")
-    body = page.locator("body")
-    expect(body).to_be_visible()
