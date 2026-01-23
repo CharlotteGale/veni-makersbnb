@@ -7,46 +7,33 @@
 
   <h2 class="mb-4 text-center">Add a New Listing</h2>
 
-  <form method="POST">
+  <form method="POST" enctype="multipart/form-data">
 
-    
+
     <div class="mb-3">
       <label class="form-label">Property name</label>
-      <input
-        name="name"
-        type="text"
-        class="form-control"
-        placeholder="e.g. Cozy London Flat"
-        required
-      >
+      <input name="name" type="text" class="form-control" placeholder="e.g. Cozy London Flat" required>
     </div>
 
-    
+
     <div class="mb-3">
       <label class="form-label">Description</label>
-      <textarea
-        name="description"
-        class="form-control"
-        rows="4"
-        placeholder="Describe your property"
-        required
-      ></textarea>
+      <textarea name="description" class="form-control" rows="4" placeholder="Describe your property"
+        required></textarea>
     </div>
 
-    
+
     <div class="mb-3">
       <label class="form-label">Price per night (£)</label>
-      <input
-        name="price_per_night"
-        type="number"
-        class="form-control"
-        min="1"
-        step="1"
-        required
-      >
+      <input name="price_per_night" type="number" class="form-control" min="1" step="1" required>
     </div>
 
-    
+    <div class="mb-3">
+      <label class="form-label">Listing image</label>
+      <input type="file" name="image" class="form-control" accept="image/*">
+    </div>
+
+
 
     <div class="d-flex justify-content-between mt-4">
       <a href="/host/listings" class="btn btn-outline-secondary">

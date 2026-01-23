@@ -10,6 +10,7 @@ from pathlib import Path
 from lib.booking import Booking
 from lib.booking_repository import BookingRepository
 from lib.listing import Listing
+from werkzeug.utils import secure_filename
 
 # ======================
 # Create Flask app
@@ -129,8 +130,15 @@ def profile():
 
 @app.route("/contact")
 def contact():
-    return "Contact page coming soon"
+    return render_template("contact.html")
 
+@app.route("/terms")
+def terms_and_conditions():
+    return render_template("legal/terms_and_conditions.html")
+
+@app.route("/privacy")
+def privacy_statement():
+    return render_template("legal/privacy_statement.html")
 
 @app.route("/host/listings")
 def host_listings():
@@ -140,18 +148,24 @@ def host_listings():
         flash("Please log in to view your listings.")
         return redirect("/login")
 
-    # Pull ONLY this host's listings
     listings = listing_repository.show_host_listings(user_id)
-    
-    # Get pending bookings for this host's listings
-    pending_bookings = booking_repository.get_pending_bookings_for_host(user_id)
-    
-    # Get guest information for each booking
-    bookings_with_guests = []
+    all_host_bookings = booking_repository.find_by_host(user_id)
+    pending_bookings = [b for b in all_host_bookings if b.status == 'pending']
+    accepted_bookings = [b for b in all_host_bookings if b.status == 'confirmed']
+    pending_with_guests = []
     for booking in pending_bookings:
         guest = user_repository.find(booking.guest_id)
         listing = listing_repository.find(booking.listing_id)
-        bookings_with_guests.append({
+        pending_with_guests.append({
+            'booking': booking,
+            'guest': guest,
+            'listing': listing
+        })
+    accepted_with_guests = []
+    for booking in accepted_bookings:
+        guest = user_repository.find(booking.guest_id)
+        listing = listing_repository.find(booking.listing_id)
+        accepted_with_guests.append({
             'booking': booking,
             'guest': guest,
             'listing': listing
@@ -160,10 +174,9 @@ def host_listings():
     return render_template(
         "host/listings.html", 
         host_listings=listings,
-        pending_bookings=bookings_with_guests
+        pending_bookings=pending_with_guests,
+        accepted_bookings=accepted_with_guests
     )
-
-from flask import request, redirect, render_template, session, flash
 
 @app.route("/host/add_listing", methods=["GET", "POST"])
 def add_listing():
@@ -174,16 +187,25 @@ def add_listing():
         return redirect("/login")
 
     if request.method == "POST":
+        image_filename = None
+
+        file = request.files.get("image")
+
+        if file and file.filename != "" and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            image_filename = filename
+
         listing = Listing(
-            id=None,
-            name=request.form["name"],
-            description=request.form["description"],
-            price_per_night=request.form["price_per_night"],
-            user_id=user_id,
+            None,
+            user_id,
+            request.form["name"],
+            request.form["description"],
+            request.form["price_per_night"],
+            image_filename
         )
 
         listing_repository.create(listing)
-
         flash("Listing added successfully!")
         return redirect("/host/listings")
 
@@ -227,13 +249,15 @@ def guest_bookings():
         flash("Please log in to view your bookings.")
         return redirect("/login")
     
-        # /KS 22Jan2026/ Pull ONLY this guest's bookings- used filter search function from booking_repository.py
+    # /KS 22Jan2026/ Pull ONLY this guest's bookings- used filter search function from booking_repository.py
     bookings = booking_repository.show_guest_bookings(user_id)
 
     return render_template(
         "guest/bookings.html", 
         user_guest_bookings=bookings # /KS 22Jan2026/ user_guest_bookings is the bookings variable now plugged into to HTML template for guest/bookings
     )
+
+
 @app.route("/listings/<int:listing_id>")
 def listing_booking(listing_id):
     listing = listing_repository.find(listing_id)
@@ -294,15 +318,24 @@ def my_bookings():
     
     guest_id = session["user_id"]
     bookings = booking_repository.show_guest_bookings(guest_id)
-
-    # Optionally, get listing details for each booking
+    # Optionally, get listing details for each booking    
     listings = {listing.id: listing for listing in listing_repository.all()}
-
     return render_template(
         "my_bookings.html",
         bookings=bookings,
-        listings=listings
-    )
+        listings=listings)
+
+
+# Image adding stuff
+UPLOAD_FOLDER = "static/images/listings"
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+def allowed_file(filename):
+    return "." in filename and \
+           filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 
 # ======================
 # Run server last
